@@ -1,5 +1,5 @@
 const { response } = require("express");
-const Sale = require("../models/sales");
+const Sale = require("../models/Sales");
 
 const getSales = async (req, res = response) => {
   const sales = await Sale.find().populate("product", "name");
