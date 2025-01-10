@@ -24,7 +24,7 @@ app.use(fileUpload({
 
 // ROUTES
 app.use('/api/auth', require('./routes/auth'))
-app.use('/api/costumes', require('./routes/costumes'))
+app.use('/api/products', require('./routes/products'))
 app.use('/api/sales', require('./routes/sales'))
 app.use('/api/payments', require('./routes/payments'))
 

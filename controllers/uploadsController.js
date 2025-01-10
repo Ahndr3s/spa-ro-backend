@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const cloudinary = require("../cloudinary/cloudinary");
 const { uploadFileHelper } = require("../helpers");
-const { User, Costume } = require("../models");
+const { User, Product } = require("../models");
 const upreset = process.env.UPLOADPRESET;
 
 // UPLOADS A FILE TO THE SERVER
@@ -46,12 +46,12 @@ const updateImageCloudinary = async (req, resp = response) => {
       }
       break;
 
-    case "costumes":
-      model = await Costume.findById(id);
+    case "products":
+      model = await Product.findById(id);
       if (!model) {
         return resp
           .status(400)
-          .json({ msg: `There is no costume with the id ${id}!!!` });
+          .json({ msg: `There is no product with the id ${id}!!!` });
       }
       break;
     default:
@@ -96,13 +96,13 @@ const updateImage = async (req, resp = response) => {
       }
       break;
 
-    case "costumes":
-      // console.log('este es mi modelo \n'+Costume)
-      model = await Costume.findById(id);
+    case "products":
+      // console.log('este es mi modelo \n'+Product)
+      model = await Product.findById(id);
       if (!model) {
         return resp
           .status(400)
-          .json({ msg: `There is no costume with the id ${id}!!!` });
+          .json({ msg: `There is no product with the id ${id}!!!` });
       }
       break;
 
@@ -141,12 +141,12 @@ const showImage = async (req, resp = response) => {
       }
       break;
 
-    case "costumes":
-      model = await Costume.findById(id);
+    case "products":
+      model = await Product.findById(id);
       if (!model) {
         return resp
           .status(400)
-          .json({ msg: `There is no costume with the id ${id}!!!` });
+          .json({ msg: `There is no product with the id ${id}!!!` });
       }
       break;
 

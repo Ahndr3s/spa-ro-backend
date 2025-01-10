@@ -1,7 +1,7 @@
-const Costume = require('./Costumes')
+const Product = require('./Product')
 const User  = require('./User')
 
 module.exports = {
-    Costume, 
+    Product, 
     ...User, 
 }
