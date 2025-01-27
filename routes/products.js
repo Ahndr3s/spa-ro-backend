@@ -5,7 +5,7 @@ const { validateFields } = require("../middlewares/validateFields");
 const { validateJWT } = require("../middlewares/validate-jwt");
 const { getProducts, createProduct, updateProduct, deleteProduct } = require("../controllers/productsController");
 
-// GET COURSES
+// GET PRODUCTS
 router.get('/', getProducts)
 
 // EVERY ROUTE HAS TO BE VALIDATED
