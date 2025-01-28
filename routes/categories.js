@@ -14,12 +14,14 @@ router.use(validateJWT)
 // CREATE CATEGORY
 // router.post('/', upload.single('img'), [
 router.post('/', [
+    check('type', 'The category must have a type!!').not().isEmpty(),
     check('title', 'You need to add a title!!').not().isEmpty(),
     validateFields
 ], createCategory)
 
 // UPDATE CATEGORY
 router.put('/:id',[
+    check('type', 'The category must have a type!!').not().isEmpty(),
     check('title', 'You need to add a title!!').not().isEmpty(),
     validateFields
 ], updateCategory)
