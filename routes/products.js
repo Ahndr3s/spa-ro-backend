@@ -3,7 +3,7 @@ const router = Router();
 const { check } = require("express-validator");
 const { validateFields } = require("../middlewares/validateFields");
 const { validateJWT } = require("../middlewares/validate-jwt");
-const { getProducts, createProduct, updateProduct, deleteProduct } = require("../controllers/productsController");
+const { getProducts, createProduct, updateProduct, createOrUpdateProduct, deleteProduct } = require("../controllers/productsController");
 
 // GET PRODUCTS
 router.get('/', getProducts)
@@ -22,7 +22,8 @@ router.post('/', [
     check('info', 'The product needs to have info!!').not().isEmpty(),
     check('stock', 'The product needs to have stock!!').not().isEmpty(),
     validateFields
-], createProduct)
+// ], createProduct)
+], createOrUpdateProduct)
 
 // UPDATE PRODUCT
 router.put('/:id',[
@@ -34,7 +35,8 @@ router.put('/:id',[
     check('info', 'The product needs to have info!!').not().isEmpty(),
     check('stock', 'The product needs to have stock!!').not().isEmpty(),
     validateFields
-], updateProduct)
+// ], updateProduct)
+], createOrUpdateProduct)
 
 // DELETE PRODUCT
 router.delete('/:id', deleteProduct)
