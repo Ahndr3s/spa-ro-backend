@@ -1,5 +1,6 @@
 const { response } = require("express");
 const Product = require("../models/Product");
+const  mongoose  = require("mongoose");
 
 const getProducts = async (req, res = response) => {
   const products = await Product.find().populate("user", "name");
@@ -15,6 +16,7 @@ const createProduct = async(req, res = response) => {
     if(req.file){
         product.img = req.file.path
     }
+    product.category = new mongoose.Types.ObjectId(category)
 
     try {
         product.user = req.uuid
@@ -72,6 +74,32 @@ const updateProduct = async(req, res = response) => {
     }
 }
 
+const createOrUpdateProduct = async (req, res) => {
+    try {
+      let { category } = req.body;
+  
+      // Convertir category a ObjectId en el backend
+      if (!mongoose.Types.ObjectId.isValid(category)) {
+        return res.status(400).json({ message: "Categoría inválida" });
+      }
+  
+      const productData = {
+        ...req.body,
+        category: new mongoose.Types.ObjectId(category),
+      };
+  
+      const product = await Product.findByIdAndUpdate(req.body.id, productData, {
+        new: true,
+        upsert: true,
+      });
+  
+      res.status(200).json(product);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error en el servidor" });
+    }
+  };
+
 const deleteProduct = async(req, res = response) => {
     const productId = req.params.id
     const uuid = req.uuid 
@@ -107,4 +135,4 @@ const deleteProduct = async(req, res = response) => {
 }
 
 
-module.exports = {getProducts, createProduct, updateProduct, deleteProduct}
+module.exports = {getProducts, createProduct, updateProduct, createOrUpdateProduct, deleteProduct}
