@@ -83,12 +83,13 @@ const createOrUpdateProduct = async (req, res) => {
         return res.status(400).json({ message: "Categoría inválida" });
       }
   
-      const productData = {
-        ...req.body,
-        category: new mongoose.Types.ObjectId(category),
-      };
-  
-      const product = await Product.findByIdAndUpdate(req.body.id, productData, {
+      category = mongoose.Types.ObjectId.createFromHexString(category);
+
+    const newProduct = new Product({
+      ...req.body,
+      category, // Se guarda como ObjectId
+    });
+      const product = await Product.findByIdAndUpdate(req.body.id, newProduct, {
         new: true,
         upsert: true,
       });
