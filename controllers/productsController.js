@@ -141,4 +141,5 @@ const deleteProduct = async(req, res = response) => {
 }
 
 
-module.exports = {getProducts, createProduct, updateProduct, createOrUpdateProduct, deleteProduct}
+// module.exports = {getProducts, createProduct, updateProduct, createOrUpdateProduct, deleteProduct}
+module.exports = {getProducts, createProduct, updateProduct, deleteProduct}
