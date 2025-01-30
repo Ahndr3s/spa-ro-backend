@@ -16,7 +16,7 @@ const createProduct = async(req, res = response) => {
     if(req.file){
         product.img = req.file.path
     }
-    product.category = new mongoose.Types.ObjectId(category)
+    // product.category = new mongoose.Types.ObjectId(category)
 
     try {
         product.user = req.uuid
