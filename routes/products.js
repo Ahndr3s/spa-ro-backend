@@ -12,7 +12,6 @@ router.get('/', getProducts)
 router.use(validateJWT)
 
 // CREATE PRODUCT
-// router.post('/', upload.single('img'), [
 router.post('/', [
     check('type', 'The product must have a type!!').not().isEmpty(),
     check('title', 'You need to add a title!!').not().isEmpty(),
@@ -22,8 +21,8 @@ router.post('/', [
     check('info', 'The product needs to have info!!').not().isEmpty(),
     check('stock', 'The product needs to have stock!!').not().isEmpty(),
     validateFields
-// ], createProduct)
-], createOrUpdateProduct)
+], createProduct)
+// ], createOrUpdateProduct)
 
 // UPDATE PRODUCT
 router.put('/:id',[
@@ -35,8 +34,8 @@ router.put('/:id',[
     check('info', 'The product needs to have info!!').not().isEmpty(),
     check('stock', 'The product needs to have stock!!').not().isEmpty(),
     validateFields
-// ], updateProduct)
-], createOrUpdateProduct)
+], updateProduct)
+// ], createOrUpdateProduct)
 
 // DELETE PRODUCT
 router.delete('/:id', deleteProduct)

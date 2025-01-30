@@ -74,16 +74,21 @@ const updateProduct = async(req, res = response) => {
     }
 }
 
-const createOrUpdateProduct = async (req, res) => {
+/*const createOrUpdateProduct = async (req, res) => {
     try {
       let { category } = req.body;
   
+      // IF U REALLY WANT TO LINK THE CATEGORY TO THE DB RECORDS
+      // U MUST CREATE AN STATE ON THE CATEGORY TO SELECT IT   
+
+      //---------------------------------------------------------------------
       // Convertir category a ObjectId en el backend
       if (!mongoose.Types.ObjectId.isValid(category)) {
         return res.status(400).json({ message: "Categoría inválida" });
-      }
-  
-      category = mongoose.Types.ObjectId.createFromHexString(category);
+        }
+        
+        category = mongoose.Types.ObjectId.createFromHexString(category);
+      //---------------------------------------------------------------------
 
     const newProduct = new Product({
       ...req.body,
@@ -99,7 +104,7 @@ const createOrUpdateProduct = async (req, res) => {
       console.error(error);
       res.status(500).json({ message: "Error en el servidor" });
     }
-  };
+  };*/
 
 const deleteProduct = async(req, res = response) => {
     const productId = req.params.id
