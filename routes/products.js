@@ -3,7 +3,7 @@ const router = Router();
 const { check } = require("express-validator");
 const { validateFields } = require("../middlewares/validateFields");
 const { validateJWT } = require("../middlewares/validate-jwt");
-const { getProducts, createProduct, updateProduct, createOrUpdateProduct, deleteProduct } = require("../controllers/productsController");
+const { getProducts, createProduct, updateProduct, deleteProduct } = require("../controllers/productsController");
 
 // GET PRODUCTS
 router.get('/', getProducts)

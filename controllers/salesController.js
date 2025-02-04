@@ -2,7 +2,7 @@ const { response } = require("express");
 const Sale = require("../models/Sales");
 
 const getSales = async (req, res = response) => {
-  const sales = await Sale.find().populate("product", "name");
+  const sales = await Sale.find().populate("user", "name");
   return res.json({
     ok: true,
     sales,
@@ -15,22 +15,9 @@ const createSale = async (req, res = response) => {
   try {
     sale.user = req.uuid;
 
-    // Asegúrate de que price y quantity están definidos y se convierten a número
-    const price = parseFloat(req.body.price);
-    const quantity = parseInt(req.body.quantity);
-
-    if (isNaN(price) || isNaN(quantity)) {
-      return res.status(400).json({
-        ok: false,
-        msg: "Price and quantity must be valid numbers.",
-      });
-    }
-
     // Calcular subTotal, iva y total
-    sale.subTotal = (price * quantity).toString(); // Calcula el subtotal
     sale.iva = (parseFloat(sale.subTotal) * 0.16).toString(); // Calcula el IVA (16%)
     sale.total = (parseFloat(sale.subTotal) + parseFloat(sale.iva)).toString(); // Calcula el total
-
 
     const savedSale = await sale.save();
     res.json({

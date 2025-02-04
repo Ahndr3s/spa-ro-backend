@@ -16,9 +16,10 @@ router.post('/', [
     check('saleDate', 'The content must have a date!!').not().isEmpty(),
     check('clientName', 'The client must have a name!!').not().isEmpty(),
     check('clientEmail', 'The client must have a email!!').not().isEmpty(),
-    check('product', 'You must add a product!!').not().isEmpty(),
-    check('price', 'The costume needs to have price!!').not().isEmpty(),
-    check('quantity', 'The costume needs to have info!!').not().isEmpty(),
+    check('sellingProducts', 'You must add a product!!').not().isEmpty(),
+    check('subTotal', 'Every sale must have a subTotal amount!!').not().isEmpty(),
+    check('iva', 'Every sale must have an IVA amount!!').not().isEmpty(),
+    check('total', 'Every sale must have a Total amount!!').not().isEmpty(),
     validateFields
 ], createSale)
 
@@ -27,9 +28,10 @@ router.post('/:id', [
     check('saleDate', 'The content must have a date!!').not().isEmpty(),
     check('clientName', 'The client must have a name!!').not().isEmpty(),
     check('clientEmail', 'The client must have a email!!').not().isEmpty(),
-    check('product', 'You must add a product!!').not().isEmpty(),
-    check('price', 'The costume needs to have price!!').not().isEmpty(),
-    check('quantity', 'The costume needs to have info!!').not().isEmpty(),
+    check('sellingProducts', 'You must add a product!!').not().isEmpty(),
+    check('subTotal', 'Every sale must have a subTotal amount!!').not().isEmpty(),
+    check('iva', 'Every sale must have an IVA amount!!').not().isEmpty(),
+    check('total', 'Every sale must have a Total amount!!').not().isEmpty(),
     validateFields
 ], updateSale)
 

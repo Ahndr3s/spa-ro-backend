@@ -18,6 +18,7 @@ router.post('/', [
     check('title', 'You need to add a title!!').not().isEmpty(),
     check('subtitle1', 'You need to add a subtitle!!').not().isEmpty(),
     check('subtitle2', 'You need to add a second subtitle!!').not().isEmpty(),
+    check('category', 'You need to add a category!!').not().isEmpty(),
     validateFields
 ], createBanner)
 
@@ -27,6 +28,7 @@ router.put('/:id',[
     check('title', 'You need to add a title!!').not().isEmpty(),
     check('subtitle1', 'You need to add a subtitle!!').not().isEmpty(),
     check('subtitle2', 'You need to add a second subtitle!!').not().isEmpty(),
+    check('category', 'You need to add a category!!').not().isEmpty(),
     validateFields
 ], updateBanner)
 

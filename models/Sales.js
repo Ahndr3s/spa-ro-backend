@@ -13,17 +13,8 @@ const SalesSchema = Schema({
     type: String,
     required: true,
   },
-  product: {
-    type: Schema.Types.ObjectId,
-    ref: "Costume",
-    required: true,
-  },
-  price: {
-    type: String,
-    required: true,
-  },
-  quantity: {
-    type: String,
+  sellingProducts: {
+    type: Object,
     required: true,
   },
   subTotal: {
@@ -31,11 +22,11 @@ const SalesSchema = Schema({
     required: true,
   },
   iva: {
-    type: String,
+    type: Number,
     required: true,
   },
   total: {
-    type: String,
+    type: Number,
     required: true,
   },
   discounts: {

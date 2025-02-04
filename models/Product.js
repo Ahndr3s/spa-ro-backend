@@ -17,11 +17,6 @@ const ProductSchema = Schema({
     type: String,
     required: true,
   },
-  // category: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "Category",
-  //   required: true,
-  // },
   price: {
     type: String,
     required: true,
