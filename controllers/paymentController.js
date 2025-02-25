@@ -100,9 +100,10 @@ const checkoutOrder = async (access_token, data) => {
     const order = response.data;
 
     // Buscar la URL de aprobación en los links de la respuesta
-    const approveLink = order.links.find(link => link.rel === "approve");
+    const approveLink = order.links?.find(link => link.rel === "approve");
 
     if (!approveLink) {
+      console.error("No se encontró el enlace de aprobación. Respuesta de PayPal:", order);
       throw new Error("No se encontró el enlace de aprobación en la respuesta de PayPal.");
     }
 
