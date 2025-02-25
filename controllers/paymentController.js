@@ -57,10 +57,14 @@ const PAYPAL_SANDBOX_URL = process.env.PAYPAL_SANDBOX_URL;
   }
 };*/
 
-const getAccessToken = async() => {
+const getAccessToken = async () => {
   try {
+    console.log("Solicitando Access Token...");
+
     const params = new URLSearchParams();
     params.append("grant_type", "client_credentials");
+
+    const startTime = Date.now(); // Marca de tiempo inicial
 
     const response = await axios.post(
       `${PAYPAL_SANDBOX_URL}/v1/oauth2/token`,
@@ -73,13 +77,18 @@ const getAccessToken = async() => {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
+        timeout: 10000, // 10 segundos de espera máxima
       }
     );
 
-    return response.data.access_token; // Retorna el access_token correctamente
+    const endTime = Date.now(); // Marca de tiempo final
+    console.log(`Access Token recibido en ${endTime - startTime}ms`);
+    console.log("Access Token:", response.data.access_token);
 
+    return response.data.access_token;
   } catch (error) {
-    throw new Error(error.response?.data || error.message); // Lanza un error en caso de fallo
+    console.error("Error al obtener el Access Token:", error.response?.data || error.message);
+    throw new Error(error.response?.data || error.message);
   }
 };
 

@@ -5,7 +5,8 @@ const {
   checkoutSuccess,
   cancelCheckout,
 } = require("../controllers/paymentController");
-const HOST = process.env.HOST;
+// const HOST = process.env.HOST;
+const API_URL = process.env.API_URL;
 
 const router = Router();
 router.post("/", async (req, res) => {
@@ -31,8 +32,10 @@ router.post("/", async (req, res) => {
         brand_name: "Mi Tienda",
         landing_page: "LOGIN", // Opcional: 'BILLING' para usar dirección de facturación
         user_action: "PAY_NOW", // Para que el botón en PayPal diga "Pagar ahora"
-        return_url: `${HOST}/api/payments/success`,  // URL a la que PayPal redirige al usuario tras el pago
-        cancel_url: `${HOST}/api/payments/cancel`,  // URL si el usuario cancela el pago
+        // return_url: `${HOST}/api/payments/success`,  // URL a la que PayPal redirige al usuario tras el pago
+        // cancel_url: `${HOST}/api/payments/cancel`,  // URL si el usuario cancela el pago
+        return_url: `${API_URL}/api/payments/success`,  // URL a la que PayPal redirige al usuario tras el pago
+        cancel_url: `${API_URL}/api/payments/cancel`,  // URL si el usuario cancela el pago
       },
     };
 
