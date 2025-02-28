@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
     };
     console.log("Datos de orden antes de enviar a PayPal:", JSON.stringify(order_data_json, null, 2));
 
-    const data = JSON.stringify(order_data_json);
+    // const data = JSON.stringify(order_data_json);
 
     // Crear orden y obtener la URL de aprobación
     // const orderResponse = await checkoutOrder(access_token, data);

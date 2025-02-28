@@ -142,11 +142,47 @@ const getAccessToken = async () => {
   }
 };
 
+// const checkoutOrder = async (access_token, data) => {
+//   try {
+//     const response = await axios.post(
+//       `${PAYPAL_SANDBOX_URL}/v2/checkout/orders`,
+//       data,
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           "Authorization": `Bearer ${access_token}`,
+//           "Paypal-Request-Id": generateUUID(), // Evita duplicados
+//         },
+//       }
+//     );
+
+//     const order = response.data;
+
+//     // Buscar la URL de aprobación en los links de la respuesta
+//     const approveLink = order.links?.find(link => link.rel === "approve");
+
+//     if (!approveLink) {
+//       console.error("No se encontró el enlace de aprobación. Respuesta de PayPal:", order);
+//       throw new Error("No se encontró el enlace de aprobación en la respuesta de PayPal.");
+//     }
+
+//     return {
+//       id: order.id,
+//       approveUrl: approveLink.href, // URL donde el usuario debe aprobar el pago
+//     };
+
+//   } catch (error) {
+//     throw new Error(error.response?.data || error.message);
+//   }
+// };
+
 const checkoutOrder = async (access_token, data) => {
   try {
+    console.log("Enviando orden a PayPal:", JSON.stringify(data, null, 2)); // Depurar
+
     const response = await axios.post(
       `${PAYPAL_SANDBOX_URL}/v2/checkout/orders`,
-      data,
+      data, // No usar JSON.stringify aquí
       {
         headers: {
           "Content-Type": "application/json",
@@ -155,6 +191,8 @@ const checkoutOrder = async (access_token, data) => {
         },
       }
     );
+
+    console.log("Respuesta de PayPal:", response.data); // Depurar
 
     const order = response.data;
 
@@ -172,9 +210,11 @@ const checkoutOrder = async (access_token, data) => {
     };
 
   } catch (error) {
+    console.error("Error en checkoutOrder:", error.response?.data || error.message);
     throw new Error(error.response?.data || error.message);
   }
 };
+
 
 
 const checkoutAprove = async(access_token, data) => {
