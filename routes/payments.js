@@ -26,6 +26,16 @@ router.post("/", async (req, res) => {
             currency_code: "USD",
             value: "100.00",
           },
+          items: [
+            {
+              name: "Producto de prueba",
+              unit_amount: {
+                currency_code: "USD",
+                value: "100.00",
+              },
+              quantity: "1",
+            },
+          ],
         },
       ],
       application_context: {
@@ -38,11 +48,13 @@ router.post("/", async (req, res) => {
         cancel_url: `${API_URL}/api/payments/cancel`,  // URL si el usuario cancela el pago
       },
     };
+    console.log("Datos de orden antes de enviar a PayPal:", JSON.stringify(order_data_json, null, 2));
 
     const data = JSON.stringify(order_data_json);
 
     // Crear orden y obtener la URL de aprobación
-    const orderResponse = await checkoutOrder(access_token, data);
+    // const orderResponse = await checkoutOrder(access_token, data);
+    const orderResponse = await checkoutOrder(access_token, order_data_json);
 
     if (!orderResponse || !orderResponse.id || !orderResponse.approveUrl) {
       throw new Error("Error al crear la orden. Respuesta inválida de PayPal.");
