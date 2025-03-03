@@ -25,6 +25,12 @@ router.post("/", async (req, res) => {
           amount: {
             currency_code: "USD",
             value: "100.00",
+            breakdown: {
+              item_total: {
+                currency_code: "USD",
+                value: "100.00", // Debe coincidir con la suma de los items
+              },
+            },
           },
           items: [
             {
