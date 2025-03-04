@@ -79,16 +79,13 @@ router.post("/", async (req, res) => {
 
 router.post("/success", async (req, res) => {
   try {
-    const { token } = req.query; // PayPal envía 'token' como 'orderId'
-
-    if (!token) {
-      return res.status(400).json({ error: "Falta el token de la orden." });
+    const { orderId } = req.body; // PayPal envía el orderId en el cuerpo
+    if (!orderId) {
+      return res.status(400).json({ error: "Falta el orderId." });
     }
 
     const access_token = await getAccessToken();
-
-    // Capturar el pago de la orden
-    const captureResponse = await checkoutSuccess(access_token, token);
+    const captureResponse = await checkoutSuccess(access_token, orderId);
 
     res.json({
       message: "Pago capturado con éxito",
@@ -100,6 +97,7 @@ router.post("/success", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 router.get("/cancel", (req, res) => {
   res.json({ message: "El pago fue cancelado por el usuario." });
