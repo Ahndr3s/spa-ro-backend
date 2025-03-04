@@ -77,7 +77,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/success", async (req, res) => {
+router.post("/success", async (req, res) => {
   try {
     const { token } = req.query; // PayPal envía 'token' como 'orderId'
 
