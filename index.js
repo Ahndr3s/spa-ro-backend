@@ -8,7 +8,12 @@ const app = express()
 
 dbConnection()
 
-app.use(cors())
+app.use(cors(
+    {
+        origin: process.env.FRONTEND_URL,
+        credentials: true, // Permite enviar cookies y encabezados de autenticación
+    }
+))
 app.use(express.static('public'))
 
 // READING AND PARSING OF BODY REQUEST
