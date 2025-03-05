@@ -75,8 +75,11 @@ router.post("/", async (req, res) => {
 router.post("/success", async (req, res) => {
   try {
     const { orderId } = req.body; // PayPal envía el orderId en el cuerpo
+
     if (!orderId) {
-      return res.status(400).json({ error: "Falta el orderId." });
+      console.error("Error: Falta el orderId en la petición.");
+      return res.redirect(`/successPage?message=Error: Falta el orderId.`);
+      // return res.status(400).json({ error: "Falta el orderId." });
     }
 
     const access_token = await getAccessToken();
@@ -91,14 +94,15 @@ router.post("/success", async (req, res) => {
 
   } catch (err) {
     console.error("Error al capturar la orden:", err);
-    res.status(500).json({ error: err.message });
+    res.redirect(`/successPage?message=Error al capturar la orden.`);
+    // res.status(500).json({ error: err.message });
   }
 });
 
 // HANMDLES THE CANCELATION OF A PAYPAL'S PAYMENT
 router.get("/cancel", (req, res) => {
   res.json({ message: "El pago fue cancelado por el usuario." });
-  cancelCheckout()
+  res.redirect("/");
 });
 
 module.exports = router;
