@@ -5,15 +5,12 @@ const {
   checkoutSuccess,
   cancelCheckout,
 } = require("../controllers/paymentController");
-// const HOST = process.env.HOST;
 const API_URL = process.env.API_URL;
 
 const router = Router();
+
+// SETS THE PAYPAL REQUEST TO PAYMENT AND PASSES TO OUR CONTROLLER
 router.post("/", async (req, res) => {
-  // getAccessToken()
-  // .then(token => console.log("Access Token:", token))
-  // .catch(error => console.error("Error obteniendo token:", error.message));
-  
   try {
     const access_token = await getAccessToken();
 
@@ -56,10 +53,7 @@ router.post("/", async (req, res) => {
     };
     console.log("Datos de orden antes de enviar a PayPal:", JSON.stringify(order_data_json, null, 2));
 
-    // const data = JSON.stringify(order_data_json);
-
     // Crear orden y obtener la URL de aprobación
-    // const orderResponse = await checkoutOrder(access_token, data);
     const orderResponse = await checkoutOrder(access_token, order_data_json);
 
     if (!orderResponse || !orderResponse.id || !orderResponse.approveUrl) {
@@ -77,6 +71,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// HANDLES A SUCCESFUL PAYPAL'S PAYMENT REQUEST
 router.post("/success", async (req, res) => {
   try {
     const { orderId } = req.body; // PayPal envía el orderId en el cuerpo
@@ -87,10 +82,12 @@ router.post("/success", async (req, res) => {
     const access_token = await getAccessToken();
     const captureResponse = await checkoutSuccess(access_token, orderId);
 
-    res.json({
-      message: "Pago capturado con éxito",
-      capture: captureResponse,
-    });
+    // res.json({
+    //   message: "Pago capturado con éxito",
+    //   capture: captureResponse,
+    // });
+
+    res.redirect(`/successPage?message=Pago capturado con éxito`);
 
   } catch (err) {
     console.error("Error al capturar la orden:", err);
@@ -98,9 +95,10 @@ router.post("/success", async (req, res) => {
   }
 });
 
-
+// HANMDLES THE CANCELATION OF A PAYPAL'S PAYMENT
 router.get("/cancel", (req, res) => {
   res.json({ message: "El pago fue cancelado por el usuario." });
+  cancelCheckout()
 });
 
 module.exports = router;
