@@ -6,6 +6,7 @@ const {
   cancelCheckout,
 } = require("../controllers/paymentController");
 const API_URL = process.env.API_URL;
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 const router = Router();
 
@@ -78,7 +79,7 @@ router.post("/success", async (req, res) => {
 
     if (!orderId) {
       console.error("Error: Falta el orderId en la petición.");
-      return res.redirect(`/successPage?message=Error: Falta el orderId.`);
+      return res.redirect(`${FRONTEND_URL}/successPage?message=Error: Falta el orderId.`);
       // return res.status(400).json({ error: "Falta el orderId." });
     }
 
@@ -90,11 +91,11 @@ router.post("/success", async (req, res) => {
     //   capture: captureResponse,
     // });
 
-    res.redirect(`/successPage?message=Pago capturado con éxito`);
+    res.redirect(`${FRONTEND_URL}/successPage?message=Pago capturado con éxito`);
 
   } catch (err) {
     console.error("Error al capturar la orden:", err);
-    res.redirect(`/successPage?message=Error al capturar la orden.`);
+    res.redirect(`${FRONTEND_URL}/successPage?message=Error al capturar la orden.`);
     // res.status(500).json({ error: err.message });
   }
 });
@@ -102,7 +103,7 @@ router.post("/success", async (req, res) => {
 // HANMDLES THE CANCELATION OF A PAYPAL'S PAYMENT
 router.get("/cancel", (req, res) => {
   res.json({ message: "El pago fue cancelado por el usuario." });
-  res.redirect("/");
+  res.redirect(`${FRONTEND_URL}/cancel`);
 });
 
 module.exports = router;
