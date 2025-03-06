@@ -49,7 +49,7 @@ router.post("/", async (req, res) => {
         // return_url: `${HOST}/api/payments/success`,  // URL a la que PayPal redirige al usuario tras el pago
         // cancel_url: `${HOST}/api/payments/cancel`,  // URL si el usuario cancela el pago
         return_url: `${FRONTEND_URL}/successPage`,  // URL a la que PayPal redirige al usuario tras el pago
-        cancel_url: `${FRONTEND_URL}/`,  // URL si el usuario cancela el pago
+        cancel_url: `${FRONTEND_URL}/home`,  // URL si el usuario cancela el pago
       },
     };
     console.log("Datos de orden antes de enviar a PayPal:", JSON.stringify(order_data_json, null, 2));
@@ -80,20 +80,20 @@ router.post("/success", async (req, res) => {
 
     if (!orderId) {
       console.error("Error: Falta el orderId en la petición.");
-      // return res.redirect(`${FRONTEND_URL}/successPage?message=Error: Falta el orderId.`);
-      return res.status(400).json({ error: "Falta el orderId." });
+      return res.redirect(`${FRONTEND_URL}/successPage?message=Error: Falta el orderId.`);
+      // return res.status(400).json({ error: "Falta el orderId." });
     }
 
     const access_token = await getAccessToken();
     const captureResponse = await checkoutSuccess(access_token, orderId);
 
     console.log("Pago capturado con éxito:", captureResponse); // Depuración
-    res.json({message: "Pago capturado con éxito", capture: captureResponse});
-    // res.redirect(`${FRONTEND_URL}/successPage?message=Pago capturado con éxito`);
+    // res.json({message: "Pago capturado con éxito", capture: captureResponse});
+    res.redirect(`${FRONTEND_URL}/successPage`);
 
   } catch (err) {
-    console.error("Error al capturar la orden:", err);
-    // res.redirect(`${FRONTEND_URL}/successPage?message=Error al capturar la orden.`);
+    // console.error("Error al capturar la orden:", err);
+    res.redirect(`${FRONTEND_URL}/successPage?message=Error al capturar la orden.`);
     res.status(500).json({ error: err.message });
   }
 });
