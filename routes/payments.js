@@ -75,6 +75,7 @@ router.post("/", async (req, res) => {
 // HANDLES A SUCCESFUL PAYPAL'S PAYMENT REQUEST
 router.post("/success", async (req, res) => {
   try {
+    console.log("PayPal llamó a /success con:", req.body); // Depuración
     const { orderId } = req.body; // PayPal envía el orderId en el cuerpo
 
     if (!orderId) {
@@ -90,7 +91,7 @@ router.post("/success", async (req, res) => {
     //   message: "Pago capturado con éxito",
     //   capture: captureResponse,
     // });
-
+    console.log("Pago capturado con éxito:", captureResponse); // Depuración
     res.redirect(`${FRONTEND_URL}/successPage?message=Pago capturado con éxito`);
 
   } catch (err) {
