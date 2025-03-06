@@ -48,8 +48,8 @@ router.post("/", async (req, res) => {
         user_action: "PAY_NOW", // Para que el botón en PayPal diga "Pagar ahora"
         // return_url: `${HOST}/api/payments/success`,  // URL a la que PayPal redirige al usuario tras el pago
         // cancel_url: `${HOST}/api/payments/cancel`,  // URL si el usuario cancela el pago
-        return_url: `${API_URL}/api/payments/success`,  // URL a la que PayPal redirige al usuario tras el pago
-        cancel_url: `${API_URL}/api/payments/cancel`,  // URL si el usuario cancela el pago
+        return_url: `${FRONTEND_URL}/successPage`,  // URL a la que PayPal redirige al usuario tras el pago
+        cancel_url: `${FRONTEND_URL}/`,  // URL si el usuario cancela el pago
       },
     };
     console.log("Datos de orden antes de enviar a PayPal:", JSON.stringify(order_data_json, null, 2));
