@@ -92,12 +92,14 @@ router.post("/success", async (req, res) => {
 
     console.log("✅ Pago capturado con éxito:", captureResponse);
     // return res.redirect(`${FRONTEND_URL}/successPage`);
+    // En lugar de redirigir, devuelve un JSON con la confirmación
+    return res.json({ message: "Pago capturado con éxito" });
   } catch (err) {
     console.error("❌ Error al capturar la orden:", err);
-    return res.redirect(`${FRONTEND_URL}/successPage?message=Error al capturar la orden.`);
+    return res.redirect(
+      `${FRONTEND_URL}/successPage?message=Error al capturar la orden.`
+    );
   }
 });
-
-
 
 module.exports = router;
