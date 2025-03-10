@@ -13,7 +13,7 @@ const router = Router();
 // SETS THE PAYPAL REQUEST TO PAYMENT AND PASSES TO OUR CONTROLLER
 router.post("/", async (req, res) => {
   try {
-    const access_token = await getAccessToken();
+    const access_token = await getAccessToken(); // Generamos el token solo una vez
 
     let order_data_json = {
       intent: "CAPTURE",
@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
             breakdown: {
               item_total: {
                 currency_code: "USD",
-                value: "100.00", // Debe coincidir con la suma de los items
+                value: "100.00",
               },
             },
           },
@@ -44,30 +44,28 @@ router.post("/", async (req, res) => {
       ],
       application_context: {
         brand_name: "Mi Tienda",
-        landing_page: "LOGIN", // Opcional: 'BILLING' para usar dirección de facturación
-        user_action: "PAY_NOW", // Para que el botón en PayPal diga "Pagar ahora"
-        // return_url: `${HOST}/api/payments/success`,  // URL a la que PayPal redirige al usuario tras el pago
-        // cancel_url: `${HOST}/api/payments/cancel`,  // URL si el usuario cancela el pago
-        return_url: `${FRONTEND_URL}/successPage`,  // URL a la que PayPal redirige al usuario tras el pago
-        cancel_url: `${FRONTEND_URL}/home`,  // URL si el usuario cancela el pago
+        landing_page: "LOGIN",
+        user_action: "PAY_NOW",
+        return_url: `${FRONTEND_URL}/successPage`,
+        cancel_url: `${FRONTEND_URL}/home`,
       },
     };
-    console.log("Datos de orden antes de enviar a PayPal:", JSON.stringify(order_data_json, null, 2));
 
-    // Crear orden y obtener la URL de aprobación
+    console.log("🛒 Creando orden en PayPal...");
     const orderResponse = await checkoutOrder(access_token, order_data_json);
 
     if (!orderResponse || !orderResponse.id || !orderResponse.approveUrl) {
-      throw new Error("Error al crear la orden. Respuesta inválida de PayPal.");
+      throw new Error("❌ Error al crear la orden en PayPal.");
     }
 
-    // Enviar la URL al frontend para redirigir al usuario a PayPal
+    // Enviar orderId, approveUrl y access_token al frontend
     res.json({
       orderId: orderResponse.id,
       approveUrl: orderResponse.approveUrl,
+      accessToken: access_token, // Pasamos el token al frontend
     });
   } catch (err) {
-    console.error("Error al procesar el pago:", err);
+    console.error("❌ Error en la creación de la orden:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -77,26 +75,29 @@ router.post("/success", async (req, res) => {
   console.log("📢 Recibida petición POST en /api/payments/success");
 
   try {
-    const { orderId } = req.body;
+    const { orderId, accessToken } = req.body; // Recibir token del frontend
+
     if (!orderId) {
-      console.error("❌ Error: Falta el orderId en la petición.");
-      return res.redirect(`${FRONTEND_URL}/successPage?message=Falta el orderId.`);
+      console.error("❌ Error: Falta el orderId.");
+      return res.status(400).json({ error: "Falta el orderId." });
     }
 
-    const access_token = await getAccessToken();
-    const captureResponse = await checkoutSuccess(access_token, orderId);
+    if (!accessToken) {
+      console.error("❌ Error: Falta el accessToken.");
+      return res.status(400).json({ error: "Falta el accessToken." });
+    }
+
+    console.log("🔑 Usando accessToken existente...");
+    const captureResponse = await checkoutSuccess(accessToken, orderId);
 
     console.log("✅ Pago capturado con éxito:", captureResponse);
-
-    // Redirigir al frontend
     return res.redirect(`${FRONTEND_URL}/successPage`);
   } catch (err) {
     console.error("❌ Error al capturar la orden:", err);
-
-    // Solo una respuesta (evita el error ERR_HTTP_HEADERS_SENT)
     return res.redirect(`${FRONTEND_URL}/successPage?message=Error al capturar la orden.`);
   }
 });
+
 
 
 module.exports = router;
