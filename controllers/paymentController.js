@@ -7,9 +7,9 @@ const PAYPAL_SANDBOX_URL = process.env.PAYPAL_SANDBOX_URL;
 const getAccessToken = async () => {
   try {
     console.log("Solicitando Access Token...");
-    console.log("PAYPAL_API_CLIENT:", PAYPAL_API_CLIENT ? "OK" : "NO DEFINIDO");
+    console.log("PAYPAL_API_CLIENT:", PAYPAL_API_CLIENT);
     console.log("PAYPAL_API_SECRET:", PAYPAL_API_SECRET ? "OK" : "NO DEFINIDO");
-    console.log("PAYPAL_SANDBOX_URL:", PAYPAL_SANDBOX_URL || "NO DEFINIDO");
+    console.log("PAYPAL_SANDBOX_URL:", PAYPAL_SANDBOX_URL);
 
     if (!PAYPAL_API_CLIENT || !PAYPAL_API_SECRET || !PAYPAL_SANDBOX_URL) {
       throw new Error("Faltan credenciales de PayPal en el archivo .env");
@@ -17,8 +17,6 @@ const getAccessToken = async () => {
 
     const params = new URLSearchParams();
     params.append("grant_type", "client_credentials");
-
-    const startTime = Date.now(); // Marca de tiempo inicial
 
     const response = await axios.post(
       `${PAYPAL_SANDBOX_URL}/v1/oauth2/token`,
@@ -31,28 +29,20 @@ const getAccessToken = async () => {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        timeout: 30000, // Aumentamos a 30 segundos
       }
     );
 
-    const endTime = Date.now(); // Marca de tiempo final
-    console.log(`Access Token recibido en ${endTime - startTime}ms`);
-    console.log("Access Token:", response.data.access_token);
-
+    console.log("Access Token recibido:", response.data.access_token);
     return response.data.access_token;
   } catch (error) {
-    if (error.response) {
-      console.error("Error en la respuesta de PayPal:", error.response.status, error.response.data);
-      throw new Error(`PayPal Error ${error.response.status}: ${JSON.stringify(error.response.data)}`);
-    } else if (error.request) {
-      console.error("No se recibió respuesta de PayPal:", error.request);
-      throw new Error("No se recibió respuesta de PayPal. Puede ser un problema de conexión o tiempo de espera.");
-    } else {
-      console.error("Error desconocido al obtener el Access Token:", error.message);
-      throw new Error(error.message);
-    }
+    console.error("🚨 Error en la autenticación con PayPal 🚨");
+    console.error("Código de estado:", error.response?.status);
+    console.error("Datos de respuesta:", error.response?.data);
+
+    throw new Error(error.response?.data?.error_description || "Error desconocido al obtener el token");
   }
 };
+
 
 const checkoutOrder = async (access_token, data) => {
   try {
