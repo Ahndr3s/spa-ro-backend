@@ -91,7 +91,7 @@ router.post("/success", async (req, res) => {
     const captureResponse = await checkoutSuccess(accessToken, orderId);
 
     console.log("✅ Pago capturado con éxito:", captureResponse);
-    return res.redirect(`${FRONTEND_URL}/successPage`);
+    // return res.redirect(`${FRONTEND_URL}/successPage`);
   } catch (err) {
     console.error("❌ Error al capturar la orden:", err);
     return res.redirect(`${FRONTEND_URL}/successPage?message=Error al capturar la orden.`);
