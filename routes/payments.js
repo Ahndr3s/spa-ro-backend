@@ -14,6 +14,11 @@ const router = Router();
 router.post("/", async (req, res) => {
   try {
     const access_token = await getAccessToken(); // Generamos el token solo una vez
+    const { order } = req.body; // Extraer la orden del cuerpo de la petición
+
+    if (!order || !order.activeOrder || !order.activeOrder.SellingProducts) {
+      throw new Error("❌ Datos de la orden inválidos.");
+    }
 
     let order_data_json = {
       intent: "CAPTURE",
@@ -22,24 +27,22 @@ router.post("/", async (req, res) => {
           reference_id: "d9f80740-38f0-11e8-b467-0ed5f89f718b",
           amount: {
             currency_code: "USD",
-            value: "100.00",
+            value: `${order.activeOrder.subTotal}.00`,
             breakdown: {
               item_total: {
                 currency_code: "USD",
-                value: "100.00",
+                value: `${order.activeOrder.subTotal}.00`,
               },
             },
           },
-          items: [
-            {
-              name: "Producto de prueba",
-              unit_amount: {
-                currency_code: "USD",
-                value: "100.00",
-              },
-              quantity: "1",
+          items: order.activeOrder.SellingProducts.map((product) => ({
+            name: product.title,
+            unit_amount: {
+              currency_code: "USD",
+              value: `${product.price}.00`,
             },
-          ],
+            quantity: `${product.qty}`,
+          })),
         },
       ],
       application_context: {
@@ -51,7 +54,8 @@ router.post("/", async (req, res) => {
       },
     };
 
-    console.log("🛒 Creando orden en PayPal...");
+    console.log("🛒 Creando orden en PayPal...", JSON.stringify(order_data_json, null, 2));
+    
     const orderResponse = await checkoutOrder(access_token, order_data_json);
 
     if (!orderResponse || !orderResponse.id || !orderResponse.approveUrl) {
@@ -62,7 +66,7 @@ router.post("/", async (req, res) => {
     res.json({
       orderId: orderResponse.id,
       approveUrl: orderResponse.approveUrl,
-      accessToken: access_token, // Pasamos el token al frontend
+      accessToken: access_token,
     });
   } catch (err) {
     console.error("❌ Error en la creación de la orden:", err);
