@@ -18,19 +18,30 @@ const getAccessToken = async () => {
     const params = new URLSearchParams();
     params.append("grant_type", "client_credentials");
 
+    // const response = await axios.post(
+    //   `${PAYPAL_SANDBOX_URL}/v1/oauth2/token`,
+    //   params,
+    //   {
+    //     auth: {
+    //       username: PAYPAL_API_CLIENT,
+    //       password: PAYPAL_API_SECRET,
+    //     },
+    //     headers: {
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //     },
+    //   }
+    // );
     const response = await axios.post(
       `${PAYPAL_SANDBOX_URL}/v1/oauth2/token`,
       params,
       {
-        auth: {
-          username: PAYPAL_API_CLIENT,
-          password: PAYPAL_API_SECRET,
-        },
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${Buffer.from(`${PAYPAL_API_CLIENT}:${PAYPAL_API_SECRET}`).toString("base64")}`,
         },
       }
     );
+    
 
     console.log("Access Token recibido:", response.data.access_token);
     return response.data.access_token;
