@@ -10,16 +10,33 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 
 const router = Router();
 
-// SETS THE PAYPAL REQUEST TO PAYMENT AND PASSES TO OUR CONTROLLER
 router.post("/", async (req, res) => {
   try {
     const access_token = await getAccessToken(); // Generamos el token solo una vez
     const { order } = req.body; // Extraer la orden del cuerpo de la petición
 
-    if (!order || !order.activeOrder || !order.activeOrder.SellingProducts) {
-      throw new Error("❌ Datos de la orden inválidos.");
+    console.log("📦 Orden recibida:", JSON.stringify(order, null, 2));
+
+    // Validaciones para evitar datos incorrectos
+    if (!order || typeof order !== "object") {
+      throw new Error("❌ La orden no es un objeto válido.");
     }
 
+    const { activeOrder } = order;
+    if (!activeOrder || typeof activeOrder !== "object") {
+      throw new Error("❌ activeOrder no es un objeto válido.");
+    }
+
+    const { subTotal, SellingProducts } = activeOrder;
+    if (!subTotal || isNaN(subTotal)) {
+      throw new Error("❌ subTotal no es un número válido.");
+    }
+
+    if (!Array.isArray(SellingProducts) || SellingProducts.length === 0) {
+      throw new Error("❌ SellingProducts no es un array válido o está vacío.");
+    }
+
+    // Construcción del objeto order_data_json
     let order_data_json = {
       intent: "CAPTURE",
       purchase_units: [
@@ -27,22 +44,34 @@ router.post("/", async (req, res) => {
           reference_id: "d9f80740-38f0-11e8-b467-0ed5f89f718b",
           amount: {
             currency_code: "USD",
-            value: `${order.activeOrder.subTotal}.00`,
+            value: subTotal.toFixed(2), // Convertir a string con 2 decimales
             breakdown: {
               item_total: {
                 currency_code: "USD",
-                value: `${order.activeOrder.subTotal}.00`,
+                value: subTotal.toFixed(2),
               },
             },
           },
-          items: order.activeOrder.SellingProducts.map((product) => ({
-            name: product.title,
-            unit_amount: {
-              currency_code: "USD",
-              value: `${product.price}.00`,
-            },
-            quantity: `${product.qty}`,
-          })),
+          items: SellingProducts.map((product) => {
+            if (!product.title || typeof product.title !== "string") {
+              throw new Error("❌ Producto sin título válido.");
+            }
+            if (!product.price || isNaN(product.price)) {
+              throw new Error(`❌ Precio inválido para el producto: ${product.title}`);
+            }
+            if (!product.qty || isNaN(product.qty) || product.qty <= 0) {
+              throw new Error(`❌ Cantidad inválida para el producto: ${product.title}`);
+            }
+
+            return {
+              name: product.title,
+              unit_amount: {
+                currency_code: "USD",
+                value: product.price.toFixed(2),
+              },
+              quantity: product.qty, // PayPal acepta número, no string
+            };
+          }),
         },
       ],
       application_context: {
@@ -55,7 +84,7 @@ router.post("/", async (req, res) => {
     };
 
     console.log("🛒 Creando orden en PayPal...", JSON.stringify(order_data_json, null, 2));
-    
+
     const orderResponse = await checkoutOrder(access_token, order_data_json);
 
     if (!orderResponse || !orderResponse.id || !orderResponse.approveUrl) {

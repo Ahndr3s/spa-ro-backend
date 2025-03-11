@@ -54,7 +54,6 @@ const getAccessToken = async () => {
   }
 };
 
-
 const checkoutOrder = async (access_token, data) => {
   try {
     console.log("Enviando orden a PayPal:", JSON.stringify(data, null, 2)); // Depurar
