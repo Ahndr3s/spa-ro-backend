@@ -73,7 +73,7 @@ router.post("/", async (req, res) => {
               name: product.title,
               unit_amount: {
                 currency_code: "USD",
-                value: parseFloat(product.price.toFixed(2)),
+                value: parseFloat(product.price).toFixed(2),
               },
               quantity: product.qty, // PayPal acepta número, no string
             };
