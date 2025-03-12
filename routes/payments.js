@@ -16,19 +16,19 @@ router.post("/", async (req, res) => {
     const { order } = req.body; // Extraer la orden del cuerpo de la petición
 
     console.log("📦 Orden recibida:", JSON.stringify(order, null, 2));
-    console.log(order)
+    // console.log(order)
 
     // Validaciones para evitar datos incorrectos
     if (!order || typeof order !== "object") {
       throw new Error("❌ La orden no es un objeto válido.");
     }
 
-    const { activeOrder } = order;
-    if (!activeOrder || typeof activeOrder !== "object") {
-      throw new Error("❌ activeOrder no es un objeto válido.");
-    }
+    // const { activeOrder } = order;
+    // if (!activeOrder || typeof activeOrder !== "object") {
+    //   throw new Error("❌ activeOrder no es un objeto válido.");
+    // }
 
-    const { subTotal, SellingProducts } = activeOrder;
+    const { subTotal, SellingProducts } = order;
     if (!subTotal || isNaN(subTotal)) {
       throw new Error("❌ subTotal no es un número válido.");
     }
@@ -45,11 +45,11 @@ router.post("/", async (req, res) => {
           reference_id: "d9f80740-38f0-11e8-b467-0ed5f89f718b",
           amount: {
             currency_code: "USD",
-            value: subTotal.toFixed(2), // Convertir a string con 2 decimales
+            value: parseFloat(subTotal.toFixed(2)), // Convertir a string con 2 decimales
             breakdown: {
               item_total: {
                 currency_code: "USD",
-                value: subTotal.toFixed(2),
+                value: parseFloat(subTotal.toFixed(2)),
               },
             },
           },
@@ -68,7 +68,7 @@ router.post("/", async (req, res) => {
               name: product.title,
               unit_amount: {
                 currency_code: "USD",
-                value: product.price.toFixed(2),
+                value: parseFloat(product.price.toFixed(2)),
               },
               quantity: product.qty, // PayPal acepta número, no string
             };
