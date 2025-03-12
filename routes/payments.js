@@ -27,6 +27,8 @@ router.post("/", async (req, res) => {
     // if (!activeOrder || typeof activeOrder !== "object") {
     //   throw new Error("❌ activeOrder no es un objeto válido.");
     // }
+    console.log(SellingProducts)
+    console.log(typeof(SellingProducts))
 
     const { subTotal, SellingProducts } = order;
     if (!subTotal || isNaN(subTotal)) {
@@ -37,8 +39,6 @@ router.post("/", async (req, res) => {
       throw new Error("❌ SellingProducts no es un array válido o está vacío.");
     }
 
-    console.log(SellingProducts)
-    console.log(typeof(SellingProducts))
 
     // Construcción del objeto order_data_json
     let order_data_json = {
