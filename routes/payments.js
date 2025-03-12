@@ -16,6 +16,7 @@ router.post("/", async (req, res) => {
     const { order } = req.body; // Extraer la orden del cuerpo de la petición
 
     console.log("📦 Orden recibida:", JSON.stringify(order, null, 2));
+    console.log(order)
 
     // Validaciones para evitar datos incorrectos
     if (!order || typeof order !== "object") {
