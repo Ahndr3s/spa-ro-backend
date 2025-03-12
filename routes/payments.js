@@ -27,10 +27,12 @@ router.post("/", async (req, res) => {
     // if (!activeOrder || typeof activeOrder !== "object") {
     //   throw new Error("❌ activeOrder no es un objeto válido.");
     // }
+    
+    const { subTotal, SellingProducts } = order;
+    
     console.log(SellingProducts)
     console.log(typeof(SellingProducts))
 
-    const { subTotal, SellingProducts } = order;
     if (!subTotal || isNaN(subTotal)) {
       throw new Error("❌ subTotal no es un número válido.");
     }
