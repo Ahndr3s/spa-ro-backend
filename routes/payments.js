@@ -28,17 +28,17 @@ router.post("/", async (req, res) => {
     //   throw new Error("❌ activeOrder no es un objeto válido.");
     // }
     
-    const { subTotal, SellingProducts } = order;
+    const { subTotal, sellingProducts } = order;
     
-    console.log(SellingProducts)
-    console.log(typeof(SellingProducts))
+    console.log(sellingProducts)
+    console.log(typeof(sellingProducts))
 
     if (!subTotal || isNaN(subTotal)) {
       throw new Error("❌ subTotal no es un número válido.");
     }
 
-    if (!Array.isArray(SellingProducts) || SellingProducts.length === 0) {
-      throw new Error("❌ SellingProducts no es un array válido o está vacío.");
+    if (!Array.isArray(sellingProducts) || sellingProducts.length === 0) {
+      throw new Error("❌ sellingProducts no es un array válido o está vacío.");
     }
 
 
@@ -58,7 +58,7 @@ router.post("/", async (req, res) => {
               },
             },
           },
-          items: SellingProducts.map((product) => {
+          items: sellingProducts.map((product) => {
             if (!product.title || typeof product.title !== "string") {
               throw new Error("❌ Producto sin título válido.");
             }
