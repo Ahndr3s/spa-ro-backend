@@ -42,9 +42,14 @@ const getAccessToken = async () => {
       }
     );
     
+    const accessToken = response.data.access_token;
 
-    console.log("Access Token recibido:", response.data.access_token);
-    return response.data.access_token;
+    if (!accessToken) {
+      throw new Error("❌ No se recibió un token de acceso válido de PayPal.");
+    }
+
+    console.log("✅ Access Token recibido:", accessToken);
+    return accessToken;
   } catch (error) {
     console.error("🚨 Error en la autenticación con PayPal 🚨");
     console.error("Código de estado:", error.response?.status);
