@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
     const access_token = await getAccessToken(); // Generamos el token solo una vez
     const { order } = req.body; // Extraer la orden del cuerpo de la petición
 
-    console.log("📦 Orden recibida:", JSON.stringify(order, null, 2));
+    // console.log("📦 Orden recibida:", JSON.stringify(order, null, 2));
     // console.log(order)
 
     // Validaciones para evitar datos incorrectos
@@ -36,6 +36,9 @@ router.post("/", async (req, res) => {
     if (!Array.isArray(SellingProducts) || SellingProducts.length === 0) {
       throw new Error("❌ SellingProducts no es un array válido o está vacío.");
     }
+
+    console.log(SellingProducts)
+    console.log(typeof(SellingProducts))
 
     // Construcción del objeto order_data_json
     let order_data_json = {
