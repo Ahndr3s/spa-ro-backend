@@ -4,6 +4,13 @@ const PAYPAL_API_CLIENT = process.env.PAYPAL_API_CLIENT;
 const PAYPAL_API_SECRET = process.env.PAYPAL_API_SECRET;
 const PAYPAL_SANDBOX_URL = process.env.PAYPAL_SANDBOX_URL;
 
+const generateUUID = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+  });
+}
+
 const getAccessToken = async () => {
   try {
     console.log("Solicitando Access Token...");
@@ -18,19 +25,6 @@ const getAccessToken = async () => {
     const params = new URLSearchParams();
     params.append("grant_type", "client_credentials");
 
-    // const response = await axios.post(
-    //   `${PAYPAL_SANDBOX_URL}/v1/oauth2/token`,
-    //   params,
-    //   {
-    //     auth: {
-    //       username: PAYPAL_API_CLIENT,
-    //       password: PAYPAL_API_SECRET,
-    //     },
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //     },
-    //   }
-    // );
     const response = await axios.post(
       `${PAYPAL_SANDBOX_URL}/v1/oauth2/token`,
       params,
@@ -45,13 +39,13 @@ const getAccessToken = async () => {
     const accessToken = response.data.access_token;
 
     if (!accessToken) {
-      throw new Error("❌ No se recibió un token de acceso válido de PayPal.");
+      throw new Error("No se recibió un token de acceso válido de PayPal");
     }
 
-    console.log("✅ Access Token recibido:", accessToken);
+    console.log("Access Token recibido:", accessToken);
     return accessToken;
   } catch (error) {
-    console.error("🚨 Error en la autenticación con PayPal 🚨");
+    console.error("Error en la autenticación con PayPal");
     console.error("Código de estado:", error.response?.status);
     console.error("Datos de respuesta:", error.response?.data);
 
@@ -59,6 +53,7 @@ const getAccessToken = async () => {
   }
 };
 
+// EXECUTES THE PAYPAL REQUEST TO CHECKOUT AN ORDER
 const checkoutOrder = async (access_token, data) => {
   try {
     console.log("Enviando orden a PayPal:", JSON.stringify(data, null, 2)); // Depurar
@@ -98,6 +93,7 @@ const checkoutOrder = async (access_token, data) => {
   }
 };
 
+// EXECUTES THE PAYPAL REQUEST TO CAPTURE THE PAYCHECK
 const checkoutSuccess = async (access_token, orderId) => {
   try {
     const response = await axios.post(
@@ -122,11 +118,5 @@ const cancelCheckout = (req, res = response) => {
   res.redirect("/");
 };
 
-const generateUUID = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-  });
-}
 
 module.exports = { getAccessToken, checkoutOrder, checkoutSuccess, cancelCheckout, generateUUID };

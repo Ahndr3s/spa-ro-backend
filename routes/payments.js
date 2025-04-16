@@ -10,6 +10,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 
 const router = Router();
 
+// PREPARES A PAYPAL'S PAYMENT REQUEST AND IT'S OBJECT TO BE APPROVED
 router.post("/", async (req, res) => {
   try {
     const access_token = await getAccessToken(); // Generamos el token solo una vez
@@ -20,7 +21,7 @@ router.post("/", async (req, res) => {
 
     // Validaciones para evitar datos incorrectos
     if (!order || typeof order !== "object") {
-      throw new Error("❌ La orden no es un objeto válido.");
+      throw new Error("La orden no es un objeto válido.");
     }
 
     // const { activeOrder } = order;
@@ -34,13 +35,12 @@ router.post("/", async (req, res) => {
     console.log(typeof(sellingProducts))
 
     if (!subTotal || isNaN(subTotal)) {
-      throw new Error("❌ subTotal no es un número válido.");
+      throw new Error("subTotal no es un número válido.");
     }
 
     if (!Array.isArray(sellingProducts) || sellingProducts.length === 0) {
-      throw new Error("❌ sellingProducts no es un array válido o está vacío.");
+      throw new Error("sellingProducts no es un array válido o está vacío.");
     }
-
 
     // Construcción del objeto order_data_json
     let order_data_json = {
@@ -60,13 +60,13 @@ router.post("/", async (req, res) => {
           },
           items: sellingProducts.map((product) => {
             if (!product.title || typeof product.title !== "string") {
-              throw new Error("❌ Producto sin título válido.");
+              throw new Error("Producto sin título válido.");
             }
             if (!product.price || isNaN(product.price)) {
-              throw new Error(`❌ Precio inválido para el producto: ${product.title}`);
+              throw new Error(`Precio inválido para el producto: ${product.title}`);
             }
             if (!product.qty || isNaN(product.qty) || product.qty <= 0) {
-              throw new Error(`❌ Cantidad inválida para el producto: ${product.title}`);
+              throw new Error(`Cantidad inválida para el producto: ${product.title}`);
             }
 
             return {
@@ -89,12 +89,11 @@ router.post("/", async (req, res) => {
       },
     };
 
-    console.log("🛒 Creando orden en PayPal...", JSON.stringify(order_data_json, null, 2));
-
+    console.log("Creando orden en PayPal...", JSON.stringify(order_data_json, null, 2));
     const orderResponse = await checkoutOrder(access_token, order_data_json);
 
     if (!orderResponse || !orderResponse.id || !orderResponse.approveUrl) {
-      throw new Error("❌ Error al crear la orden en PayPal.");
+      throw new Error("Error al crear la orden en PayPal.");
     }
 
     // Enviar orderId, approveUrl y access_token al frontend
@@ -104,37 +103,37 @@ router.post("/", async (req, res) => {
       accessToken: access_token,
     });
   } catch (err) {
-    console.error("❌ Error en la creación de la orden:", err);
+    console.error("Error en la creación de la orden:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 // HANDLES A SUCCESFUL PAYPAL'S PAYMENT REQUEST
 router.post("/success", async (req, res) => {
-  console.log("📢 Recibida petición POST en /api/payments/success");
+  console.log("Recibida petición POST en /api/payments/success");
 
   try {
     const { orderId, accessToken } = req.body; // Recibir token del frontend
 
     if (!orderId) {
-      console.error("❌ Error: Falta el orderId.");
+      console.error("Error: Falta el orderId.");
       return res.status(400).json({ error: "Falta el orderId." });
     }
 
     if (!accessToken) {
-      console.error("❌ Error: Falta el accessToken.");
+      console.error("Error: Falta el accessToken.");
       return res.status(400).json({ error: "Falta el accessToken." });
     }
 
-    console.log("🔑 Usando accessToken existente...");
+    console.log("Usando accessToken existente...");
     const captureResponse = await checkoutSuccess(accessToken, orderId);
 
-    console.log("✅ Pago capturado con éxito:", captureResponse);
+    console.log("Pago capturado con éxito:", captureResponse);
     // return res.redirect(`${FRONTEND_URL}/successPage`);
     // En lugar de redirigir, devuelve un JSON con la confirmación
     return res.json({ message: "Pago capturado con éxito" });
   } catch (err) {
-    console.error("❌ Error al capturar la orden:", err);
+    console.error("Error al capturar la orden:", err);
     return res.redirect(
       `${FRONTEND_URL}/successPage?message=Error al capturar la orden.`
     );
