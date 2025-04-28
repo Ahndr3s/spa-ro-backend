@@ -15,22 +15,22 @@ const createProduct = async(req, res = response) => {
     if(req.file){
         product.img = req.file.path
     }
-    console.log(product)
+    // console.log(product)
 
-    // try {
-    //     product.user = req.uuid
-    //     const savedProduct = await product.save()
-    //     res.json({
-    //         ok: true,
-    //         product: savedProduct
-    //     })
-    // } catch (error) {
-    //     console.log(error)
-    //     return res.status(500).json({
-    //         ok: false,
-    //         msg: 'Talk with the admin'
-    //     })
-    // }
+    try {
+        product.user = req.uuid
+        const savedProduct = await product.save()
+        res.json({
+            ok: true,
+            product: savedProduct
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            ok: false,
+            msg: 'Talk with the admin'
+        })
+    }
 }
 
 const updateProduct = async(req, res = response) => {
