@@ -15,7 +15,7 @@ const generateUUID = () => {
 
 const getAccessToken = async () => {
   try {
-    // Si tenemos un token válido en caché, lo devolvemos
+    // Verificar si el token en caché es válido
     if (cachedAccessToken && tokenExpiration && tokenExpiration > Date.now()) {
       console.log("Usando token de acceso en caché");
       return cachedAccessToken;
@@ -25,30 +25,33 @@ const getAccessToken = async () => {
     const params = new URLSearchParams();
     params.append("grant_type", "client_credentials");
 
+    // Añadir timeout y mejor manejo de errores
     const response = await axios.post(
       `${PAYPAL_SANDBOX_URL}/v1/oauth2/token`,
       params,
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${Buffer.from(`${PAYPAL_API_CLIENT}:${PAYPAL_API_SECRET}`).toString("base64")}`,
+          "Authorization": `Basic ${Buffer.from(`${PAYPAL_API_CLIENT}:${PAYPAL_API_SECRET}`).toString("base64")}`,
         },
+        timeout: 10000 // 10 segundos de timeout
       }
     );
-    
-    cachedAccessToken = response.data.access_token;
-    // Establecemos la expiración (normalmente 8 horas, pero usamos 7 para estar seguros)
-    tokenExpiration = Date.now() + 7 * 60 * 60 * 1000;
 
-    if (!cachedAccessToken) {
-      throw new Error("No se recibió un token de acceso válido de PayPal");
+    if (!response.data.access_token) {
+      throw new Error("PayPal no devolvió un token de acceso");
     }
 
-    console.log("Nuevo Access Token recibido:", cachedAccessToken);
+    cachedAccessToken = response.data.access_token;
+    tokenExpiration = Date.now() + (response.data.expires_in * 1000 - 60000); // 1 minuto antes de expirar
+
     return cachedAccessToken;
   } catch (error) {
-    console.error("Error en la autenticación con PayPal");
-    throw new Error(error.response?.data?.error_description || "Error desconocido al obtener el token");
+    console.error("Error en getAccessToken:", error.response?.data || error.message);
+    // Limpiar token inválido
+    cachedAccessToken = null;
+    tokenExpiration = null;
+    throw error;
   }
 };
 

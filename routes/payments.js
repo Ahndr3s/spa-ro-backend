@@ -13,18 +13,69 @@ const router = Router();
 // PREPARES A PAYPAL'S PAYMENT REQUEST AND IT'S OBJECT TO BE APPROVED
 router.post("/", async (req, res) => {
   try {
-    // Usamos el mismo token para toda la sesión
+    console.log("Iniciando creación de orden...");
     const access_token = await getAccessToken();
-    
-    // Resto del código igual...
-    
+    console.log("Token de acceso obtenido:", access_token ? "OK" : "Fallo");
+
+    const { order } = req.body;
+    if (!order) {
+      throw new Error("No se recibió la orden");
+    }
+
+    // Validaciones adicionales...
+    console.log("Datos de la orden recibida:", JSON.stringify(order, null, 2));
+
+    const order_data_json = {
+      intent: "CAPTURE",
+      purchase_units: [
+        {
+          amount: {
+            currency_code: "USD",
+            value: parseFloat(order.subTotal.toFixed(2)),
+            breakdown: {
+              item_total: {
+                currency_code: "USD",
+                value: parseFloat(order.subTotal.toFixed(2)),
+              },
+            },
+          },
+          items: order.sellingProducts.map(product => ({
+            name: product.title,
+            unit_amount: {
+              currency_code: "USD",
+              value: parseFloat(product.price).toFixed(2),
+            },
+            quantity: product.qty,
+          })),
+        },
+      ],
+      application_context: {
+        brand_name: "Mi Tienda",
+        landing_page: "LOGIN",
+        user_action: "PAY_NOW",
+        return_url: `${FRONTEND_URL}/successPage`,
+        cancel_url: `${FRONTEND_URL}/home`,
+      },
+    };
+
+    console.log("Enviando orden a PayPal...");
+    const orderResponse = await checkoutOrder(access_token, order_data_json);
+
+    if (!orderResponse.id) {
+      throw new Error("PayPal no devolvió un ID de orden válido");
+    }
+
+    console.log("Orden creada con ID:", orderResponse.id);
     res.json({
       orderId: orderResponse.id,
-      approveUrl: orderResponse.approveUrl,
-      accessToken: access_token, // Enviamos el mismo token al frontend
+      accessToken: access_token, // Enviar el mismo token
     });
   } catch (err) {
-    // Manejo de errores...
+    console.error("Error en la creación de la orden:", err);
+    res.status(500).json({ 
+      error: err.message,
+      details: err.response?.data || null 
+    });
   }
 });
 
