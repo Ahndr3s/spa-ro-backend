@@ -3,6 +3,8 @@ const { response } = require("express");
 const PAYPAL_API_CLIENT = process.env.PAYPAL_API_CLIENT;
 const PAYPAL_API_SECRET = process.env.PAYPAL_API_SECRET;
 const PAYPAL_SANDBOX_URL = process.env.PAYPAL_SANDBOX_URL;
+let cachedAccessToken = null;
+let tokenExpiration = null;
 
 const generateUUID = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -13,15 +15,13 @@ const generateUUID = () => {
 
 const getAccessToken = async () => {
   try {
-    console.log("Solicitando Access Token...");
-    console.log("PAYPAL_API_CLIENT:", PAYPAL_API_CLIENT);
-    console.log("PAYPAL_API_SECRET:", PAYPAL_API_SECRET ? "OK" : "NO DEFINIDO");
-    console.log("PAYPAL_SANDBOX_URL:", PAYPAL_SANDBOX_URL);
-
-    if (!PAYPAL_API_CLIENT || !PAYPAL_API_SECRET || !PAYPAL_SANDBOX_URL) {
-      throw new Error("Faltan credenciales de PayPal en el archivo .env");
+    // Si tenemos un token válido en caché, lo devolvemos
+    if (cachedAccessToken && tokenExpiration && tokenExpiration > Date.now()) {
+      console.log("Usando token de acceso en caché");
+      return cachedAccessToken;
     }
 
+    console.log("Solicitando nuevo Access Token...");
     const params = new URLSearchParams();
     params.append("grant_type", "client_credentials");
 
@@ -36,19 +36,18 @@ const getAccessToken = async () => {
       }
     );
     
-    const accessToken = response.data.access_token;
+    cachedAccessToken = response.data.access_token;
+    // Establecemos la expiración (normalmente 8 horas, pero usamos 7 para estar seguros)
+    tokenExpiration = Date.now() + 7 * 60 * 60 * 1000;
 
-    if (!accessToken) {
+    if (!cachedAccessToken) {
       throw new Error("No se recibió un token de acceso válido de PayPal");
     }
 
-    console.log("Access Token recibido:", accessToken);
-    return accessToken;
+    console.log("Nuevo Access Token recibido:", cachedAccessToken);
+    return cachedAccessToken;
   } catch (error) {
     console.error("Error en la autenticación con PayPal");
-    console.error("Código de estado:", error.response?.status);
-    console.error("Datos de respuesta:", error.response?.data);
-
     throw new Error(error.response?.data?.error_description || "Error desconocido al obtener el token");
   }
 };
