@@ -16,7 +16,7 @@ const generateUUID = () => {
 const getAccessToken = async () => {
   try {
     // Verificar si el token en caché es válido
-    if (cachedAccessToken && tokenExpiration && tokenExpiration > Date.now()) {
+    if (cachedAccessToken && tokenExpiration && tokenExpiration > Date.now() + 30000) {
       console.log("Usando token de acceso en caché");
       return cachedAccessToken;
     }
@@ -38,16 +38,16 @@ const getAccessToken = async () => {
       }
     );
 
-    if (!response.data.access_token) {
-      throw new Error("PayPal no devolvió un token de acceso");
-    }
+    // if (!response.data.access_token) {
+    //   throw new Error("PayPal no devolvió un token de acceso");
+    // }
 
     cachedAccessToken = response.data.access_token;
-    tokenExpiration = Date.now() + (response.data.expires_in * 1000 - 60000); // 1 minuto antes de expirar
+    tokenExpiration = Date.now() + (response.data.expires_in * 1000); // 1 minuto antes de expirar
 
     return cachedAccessToken;
   } catch (error) {
-    console.error("Error en getAccessToken:", error.response?.data || error.message);
+    console.error("Error en getAccessToken:", error);
     // Limpiar token inválido
     cachedAccessToken = null;
     tokenExpiration = null;
