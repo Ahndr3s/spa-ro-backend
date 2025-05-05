@@ -10,7 +10,12 @@ const getBanners = async (req, res = response) => {
 };
 
 const createBanner = async(req, res = response) => {
-    const banner = new Banner(req.body)
+    // const banner = new Banner(req.body)
+    const banner = new Banner({
+        ...req.body,
+        user: req.uuid
+    });
+    
     
     if(req.file){
         banner.img = req.file.path  
