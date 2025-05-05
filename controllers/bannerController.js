@@ -13,23 +13,24 @@ const createBanner = async(req, res = response) => {
     const banner = new Banner(req.body)
     
     if(req.file){
-        banner.img = req.file.path
+        banner.img = req.file.path  
     }
+    console.log(banner)
 
-    try {
-        banner.user = req.uuid
-        const savedBanner = await banner.save()
-        res.json({
-            ok: true,
-            banner: savedBanner
-        })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            ok: false,
-            msg: 'Talk with the admin'
-        })
-    }
+    // try {
+    //     banner.user = req.uuid
+    //     const savedBanner = await banner.save()
+    //     res.json({
+    //         ok: true,
+    //         banner: savedBanner
+    //     })
+    // } catch (error) {
+    //     console.log(error)
+    //     return res.status(500).json({
+    //         ok: false,
+    //         msg: 'Talk with the admin'
+    //     })
+    // }
 }
 
 const updateBanner = async(req, res = response) => {
