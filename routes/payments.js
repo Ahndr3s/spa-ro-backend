@@ -18,8 +18,19 @@ router.post("/", async (req, res) => {
     console.log("Token de acceso obtenido:", access_token ? "OK" : "Fallo");
 
     const { order } = req.body;
-    if (!order) {
-      throw new Error("No se recibió la orden");
+    if (!order|| !order.sellingProducts || order.sellingProducts.length === 0) {
+      return res.status(400).json({ error: "Orden inválida o sin productos" });
+    }
+
+    // Validar que el subtotal coincida con la suma de los productos
+    const calculatedSubtotal = order.sellingProducts.reduce((sum, product) => {
+      return sum + (parseFloat(product.price) * parseInt(product.qty));
+    }, 0);
+
+    if (Math.abs(calculatedSubtotal - order.subTotal) > 0.01) {
+      return res.status(400).json({ 
+        error: "El subtotal no coincide con la suma de los productos" 
+      });
     }
 
     // Validaciones adicionales...
