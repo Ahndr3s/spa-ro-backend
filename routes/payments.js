@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
     }
 
     // Validaciones adicionales...
-    console.log("Datos de la orden recibida:", JSON.stringify(order, null, 2));
+    // console.log("Datos de la orden recibida:", JSON.stringify(order, null, 2));
 
     const order_data_json = {
       intent: "CAPTURE",
@@ -78,12 +78,14 @@ router.post("/", async (req, res) => {
 
     console.log("Orden creada con ID:", orderResponse.id);
     res.json({
+      succeess:true,
       orderId: orderResponse.id,
       accessToken: access_token, // Enviar el mismo token
     });
   } catch (err) {
     console.error("Error en la creación de la orden:", err);
     res.status(500).json({ 
+      succeess:false,
       error: err.message,
       details: err.response?.data || null 
     });
