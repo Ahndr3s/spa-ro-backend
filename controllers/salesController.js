@@ -16,8 +16,8 @@ const createSale = async (req, res = response) => {
     sale.user = req.uuid;
 
     // Calcular subTotal, iva y total
-    sale.iva = (parseFloat(sale.subTotal) * 0.16).toString(); // Calcula el IVA (16%)
-    sale.total = (parseFloat(sale.subTotal) + parseFloat(sale.iva) + parseFloat(sale.regTariff)).toString(); // Calcula el total
+    sale.iva = (parseFloat(sale.subTotal) * 0.16); // Calcula el IVA (16%)
+    sale.total = (parseFloat(sale.subTotal) + parseFloat(sale.iva) + parseFloat(sale.regTariff)); // Calcula el total
 
     const savedSale = await sale.save();
     res.json({
