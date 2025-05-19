@@ -5,12 +5,6 @@ const { validateJWT } = require("../middlewares/validate-jwt");
 const { getSales, createSale, updateSale, deleteSale } = require("../controllers/salesController");
 const router = Router()
 
-// EVERY ROUTE MUST BE VALIDATE
-router.use(validateJWT)
-
-// GET SALES
-router.get('/', getSales)
-
 // CREATE SALES
 router.post('/', [
     check('saleDate', 'The content must have a date!!').not().isEmpty(),
@@ -25,6 +19,12 @@ router.post('/', [
     // check('total', 'Every sale must have a Total amount!!').not().isEmpty(),
     validateFields
 ], createSale)
+
+// EVERY ROUTE MUST BE VALIDATE
+router.use(validateJWT)
+
+// GET SALES
+router.get('/', getSales)
 
 // UPDATE SALES
 router.post('/:id', [
