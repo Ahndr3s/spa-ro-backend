@@ -10,11 +10,15 @@ const SalesSchema = Schema({
     required: true,
   },
   clientEmail: {
-    type: String,
+    type: String, 
     required: true,
   },
   sellingProducts: {
     type: Object,
+    required: true,
+  },
+  contactAddress: {
+    type: String,
     required: true,
   },
   subTotal: {

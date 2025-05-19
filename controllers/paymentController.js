@@ -58,7 +58,7 @@ const getAccessToken = async () => {
 // EXECUTES THE PAYPAL REQUEST TO CHECKOUT AN ORDER
 const checkoutOrder = async (access_token, data) => {
   try {
-    console.log("Enviando orden a PayPal:", JSON.stringify(data, null, 2)); // Depurar
+    // console.log("Enviando orden a PayPal:", JSON.stringify(data, null, 2)); // Depurar
 
     const response = await axios.post(
       `${PAYPAL_SANDBOX_URL}/v2/checkout/orders`,
@@ -72,7 +72,7 @@ const checkoutOrder = async (access_token, data) => {
       }
     );
 
-    console.log("Respuesta de PayPal:", response.data); // Depurar
+    // console.log("Respuesta de PayPal:", response.data); // Depurar
 
     const order = response.data;
 
