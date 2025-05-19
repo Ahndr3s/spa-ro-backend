@@ -14,7 +14,7 @@ router.post('/', [
     check('sellingProducts', 'You must add a product!!').not().isEmpty(),
     check('subTotal', 'Every sale must have a subTotal amount!!').not().isEmpty(),
     check('contactReg', 'Every sale must have a region value!!').not().isEmpty(),
-    check('regTarif', 'Every sale must have a region tariff amount!!').not().isEmpty(),
+    check('regTariff', 'Every sale must have a region tariff amount!!').not().isEmpty(),
     // check('iva', 'Every sale must have an IVA amount!!').not().isEmpty(),
     // check('total', 'Every sale must have a Total amount!!').not().isEmpty(),
     validateFields
