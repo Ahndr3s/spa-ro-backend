@@ -36,11 +36,11 @@ const SalesSchema = Schema({
   discounts: {
     type: String,
   },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
+  // user: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: "User",
+  //   required: true,
+  // },
 });
 
 SalesSchema.method('toJSON', function(){
