@@ -16,14 +16,14 @@ const createSale = async (req, res = response) => {
 
     // Calcular subTotal, iva y total
     sale.iva = (sale.subTotal * 0.16); // Calcula el IVA (16%)
-    // sale.total = sale.subTotal + sale.iva + sale.regTariff; // Calcula el total
+    sale.total = sale.subTotal + sale.iva + sale.regTariff; // Calcula el total
 
-    console.log(sale)
-    // const savedSale = await sale.save();
-    // res.json({
-    //   ok: true,
-    //   sale: savedSale
-    // });
+    // console.log(sale)
+    const savedSale = await sale.save();
+    res.json({
+      ok: true,
+      sale: savedSale
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
