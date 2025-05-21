@@ -7,6 +7,7 @@ const router = Router()
 
 // CREATE SALES
 router.post('/', [
+    check('type', 'The category must have a type!!').not().isEmpty(),
     check('saleDate', 'The content must have a date!!').not().isEmpty(),
     check('clientName', 'The client must have a name!!').not().isEmpty(),
     check('clientEmail', 'The client must have a email!!').not().isEmpty(),

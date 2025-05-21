@@ -1,6 +1,10 @@
 const { Schema, model } = require("mongoose");
 
 const SalesSchema = Schema({
+    type: {
+    type: Number,
+    required: true,
+  },
   saleDate: {
     type: String,
     required: true,
