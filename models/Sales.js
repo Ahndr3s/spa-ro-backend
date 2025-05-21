@@ -25,6 +25,10 @@ const SalesSchema = Schema({
     type: String,
     required: true,
   },
+    regTariff: {
+    type: Number,
+    required: true,
+  },
   iva: {
     type: Number,
     required: true,
