@@ -21,11 +21,12 @@ router.post('/', [
     validateFields
 ], createSale)
 
+// GET SALES
+router.get('/', getSales)
+
 // EVERY ROUTE MUST BE VALIDATE
 router.use(validateJWT)
 
-// GET SALES
-router.get('/', getSales)
 
 // UPDATE SALES
 router.post('/:id', [
