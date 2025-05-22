@@ -2,7 +2,8 @@ const { response } = require("express");
 const Sale = require("../models/Sales");
 
 const getSales = async (req, res = response) => {
-  const sales = await Sale.find().populate("user", "name");
+  // const sales = await Sale.find().populate("user", "name");
+  const sales = await Sale.find();
   return res.json({
     ok: true,
     sales,
