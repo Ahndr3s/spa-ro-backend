@@ -7,7 +7,11 @@ cloudinary.config({
     cloud_name: process.env.CLOUDNAME, 
     api_key: process.env.CLOUDAPIKEY, 
     api_secret: process.env.CLOUDAPISECRET,
-    upload_preset: process.env.UPLOADPRESET// Click 'View Credentials' below to copy your API secret
+    upload_preset: process.env.UPLOADPRESET
 });
-
+ console.log('Cloudinary config:', {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 module.exports = cloudinary
