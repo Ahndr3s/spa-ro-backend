@@ -30,7 +30,9 @@ const ProductSchema = Schema({
     required: true,
   },
   img: {
+    // type: Array,
     type: String,
+    required: true,
   },
   user: {
     type: Schema.Types.ObjectId,

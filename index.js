@@ -34,6 +34,7 @@ app.use('/api/banners', require('./routes/banners'))
 app.use('/api/sales', require('./routes/sales'))
 app.use('/api/payments', require('./routes/payments'))
 app.use('/api/categories', require('./routes/categories'))
+app.use('/api/uploads', require('./routes/uploads'))
 
 
 

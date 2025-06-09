@@ -28,15 +28,19 @@ router.get('/:collection/:id', [
 
 
 router.delete('/:collection/:id', async (req, res) => {
-// router.post( '/api/courses/${activeCourse.id}', async (req, res) => {
-    const public_id = req.params.id;
-  
-    try {
-      const result = await cloudinary.uploader.destroy(public_id);
-      res.status(200).json({ result });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+// router.delete('/:folder/:publicId', async (req, res) => {
+  const { folder, publicId } = req.params;
+  const fullPublicId = `ServerNode/${folder}/${publicId}`;
+
+  try {
+    const result = await cloudinary.uploader.destroy(fullPublicId);
+    if (result.result !== 'ok' && result.result !== 'not found') {
+      return res.status(500).json({ error: 'Failed to delete image' });
     }
-  });
+    res.json({ message: 'Image deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router
