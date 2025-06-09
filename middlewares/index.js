@@ -1,9 +1,9 @@
 const validateFiels = require('./validate-fields')
-const validateFiles  = require('./validate-files')
+// const validateFiles  = require('./validate-files')
 const validaJWT = require('./validate-jwt')
 
 module.exports = {
     ...validateFiels, 
-    ...validateFiles, 
+    // ...validateFiles, 
     ...validaJWT
 }
