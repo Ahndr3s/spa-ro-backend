@@ -22,7 +22,8 @@ const BannerSchema = Schema({
     required: true,
   },
   img: {
-    type: String,
+    // type: String,
+    type: Array,
   },
   user: {
     type: Schema.Types.ObjectId,
