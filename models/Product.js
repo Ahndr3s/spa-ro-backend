@@ -30,8 +30,8 @@ const ProductSchema = Schema({
     required: true,
   },
   img: {
-    // type: Array,
-    type: String,
+    type: Array,
+    // type: String,
     required: true,
   },
   user: {
