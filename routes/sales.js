@@ -2,7 +2,7 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 const { validateFields } = require("../middlewares/validateFields");
 const { validateJWT } = require("../middlewares/validate-jwt");
-const { getSales, createSale, updateSale, deleteSale } = require("../controllers/salesController");
+const { getSales, createSale, updateSale, deleteSale, getMostSoldProduct } = require("../controllers/salesController");
 const router = Router()
 
 // CREATE SALES
@@ -27,6 +27,8 @@ router.get('/', getSales)
 // EVERY ROUTE MUST BE VALIDATE
 router.use(validateJWT)
 
+// GET MOST SOLD PRODUCT STATISTICS
+router.get('/summary/', getMostSoldProduct);
 
 // UPDATE SALES
 router.post('/:id', [

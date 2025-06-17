@@ -109,4 +109,16 @@ const deleteSale = async (req, res = response) => {
   }
 };
 
-module.exports = {getSales, createSale, updateSale, deleteSale}
+const getMostSoldProduct = async (req, res) => {
+  // Inefficient query
+  // console.log('llegue al backend con el '+req.user._id)
+  try {
+    const stats = await Sale.getMostSoldProduct();
+    res.json(stats);
+  } catch (error) {
+    console.error("Error at getting statistics:", error);
+    res.status(500).json({ message: "Error at getting statistics" });
+  }
+}
+
+module.exports = {getSales, createSale, updateSale, deleteSale, getMostSoldProduct}
