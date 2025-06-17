@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const SalesSchema = Schema({
-    type: {
+  type: {
     type: Number,
     required: true,
   },
@@ -14,7 +14,7 @@ const SalesSchema = Schema({
     required: true,
   },
   clientEmail: {
-    type: String, 
+    type: String,
     required: true,
   },
   sellingProducts: {
@@ -29,7 +29,7 @@ const SalesSchema = Schema({
     type: String,
     required: true,
   },
-    regTariff: {
+  regTariff: {
     type: Number,
     required: true,
   },
@@ -51,10 +51,37 @@ const SalesSchema = Schema({
   // },
 });
 
-SalesSchema.method('toJSON', function(){
-    const {_id, __v, ...object} = this.toObject()
-    object.id = _id
-    return object
-  })
-  
-  module.exports = model("Sale", SalesSchema);
+SalesSchema.method("toJSON", function () {
+  const { _id, __v, ...object } = this.toObject();
+  object.id = _id;
+  return object;
+});
+
+// METHOD TO GET THE MOST SOLD PRODUCT
+SalesSchema.statics.getMostSoldProduct = async function () {
+  return db.ventas.aggregate([
+    { $unwind: "$sellingProducts" },
+    {
+      $group: {
+        _id: "$sellingProducts.id",
+        title: { $first: "$sellingProducts.title" },
+        totalQtySold: { $sum: "$sellingProducts.qty" },
+      },
+    },
+    { $sort: { totalQtySold: -1 } },
+    { $limit: 1 },
+    {
+      $project: {
+        _id: 0,
+        id: "$_id",
+        name: "$title",
+        totalQtySold: 1,
+      },
+    },
+  ]);
+};
+
+// METHOD TO GET THE MONTH'S MOST SOLD PRODUCT
+// METHOD TO GET THE REGION WITH MOST PRODUCT SHIPMENTS
+
+module.exports = model("Sale", SalesSchema);
