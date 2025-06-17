@@ -59,7 +59,7 @@ SalesSchema.method("toJSON", function () {
 
 // METHOD TO GET THE MOST SOLD PRODUCT
 SalesSchema.statics.getMostSoldProduct = async function () {
-  return db.ventas.aggregate([
+  return this.aggregate([
     { $unwind: "$sellingProducts" },
     {
       $group: {
