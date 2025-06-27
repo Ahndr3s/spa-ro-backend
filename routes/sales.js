@@ -45,7 +45,7 @@ router.delete('/:id', deleteSale)
 //-------------------------ANALYTICS-------------------------------
 
 // GET MOST SOLD PRODUCT OF THE MONTH
-router.get('/summary/mostSoldOfTheMonth/:formattedDate', getMostSoldProductOfTheMonth);
+router.get('/summary/mostSoldOfTheMonth/:inputDate', getMostSoldProductOfTheMonth);
 
 
 module.exports = router 
