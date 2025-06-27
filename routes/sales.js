@@ -2,7 +2,7 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 const { validateFields } = require("../middlewares/validateFields");
 const { validateJWT } = require("../middlewares/validate-jwt");
-const { getSales, createSale, updateSale, deleteSale, getMostSoldProduct, getMostSoldProductOfTheMonth, getEarningsOfTheMonth } = require("../controllers/salesController");
+const { getSales, createSale, updateSale, deleteSale, getMostSoldProduct, getMostSoldProductOfTheMonth } = require("../controllers/salesController");
 const router = Router()
 
 // CREATE SALES
@@ -45,7 +45,7 @@ router.delete('/:id', deleteSale)
 //-------------------------ANALYTICS-------------------------------
 
 // GET MOST SOLD PRODUCT OF THE MONTH
-router.get('/summary/mostSoldOfTheMonth/:formatedDate', getMostSoldProductOfTheMonth);
+router.get('/summary/mostSoldOfTheMonth/:formattedDate', getMostSoldProductOfTheMonth);
 
 
 module.exports = router 

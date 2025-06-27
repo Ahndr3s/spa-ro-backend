@@ -130,26 +130,15 @@ const getMostSoldProduct = async (req, res) => {
 };
 
 // GETS THE MOST SOLD PRODUCT OF THE MONTH
-// const getMostSoldProductOfTheMonth = async (req, res) => {
-//   try {
-//     const stats = await Sale.getMostSoldProductOfTheMonth(req.month, req.year);
-//     res.json(stats);
-//   } catch (error) {
-//     console.error("Error at getting month's statistics:", error);
-//     res.status(500).json({ message: "Error at getting month's statistics" });
-//   }
-// };
-
-// GETS THE SUMMATORY OF EARNINGS OF THE MONTH
-// const getEarningsOfTheMonth = async (req, res) => {
-//   try {
-//     const stats = await Sale.getEarningsOfTheMonth(req.day, req.month, req.year);
-//     res.json(stats);
-//   } catch (error) {
-//     console.error("Error at getting earning's statistics:", error);
-//     res.status(500).json({ message: "Error at getting earning's statistics" });
-//   }
-// };
+const getMostSoldProductOfTheMonth = async (req, res) => {
+  try {
+    const stats = await Sale.getMostSoldProductOfTheMonth(req.formattedDate);
+    res.json(stats);
+  } catch (error) {
+    console.error("Error at getting month's statistics:", error);
+    res.status(500).json({ message: "Error at getting month's statistics" });
+  }
+};
 
 module.exports = {
   getSales,
@@ -157,6 +146,5 @@ module.exports = {
   updateSale,
   deleteSale,
   getMostSoldProduct,
-  // getMostSoldProductOfTheMonth,
-  // getEarningsOfTheMonth,
+  getMostSoldProductOfTheMonth,
 };
