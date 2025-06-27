@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, default: mongoose } = require("mongoose");
 
 const SalesSchema = Schema({
   type: {
@@ -81,7 +81,55 @@ SalesSchema.statics.getMostSoldProduct = async function () {
   ]);
 };
 
-// METHOD TO GET THE MONTH'S MOST SOLD PRODUCT
-// METHOD TO GET THE REGION WITH MOST PRODUCT SHIPMENTS
+// METHOD TO GET THE EARNINGS OF THE MONTH
+SalesSchema.statics.getMostSoldProductOfTheMonth = async function (dateInput) {
+  // Convertir string "dd/mm/yyyy" a objeto Date
+  const [day, month, year] = dateInput.split("/").map(Number);
+  const inputDate = new Date(year, month - 1, day);
+
+  const targetMonth = inputDate.getMonth() + 1; // 1-12
+  const targetYear = inputDate.getFullYear();   // 4 dígitos
+
+  return this.aggregate([
+    // 1. Filtrar ventas por mes y año usando campos Date
+    {
+      $match: {
+        $expr: {
+          $and: [
+            { $eq: [{ $month: "$saleDate" }, targetMonth] },
+            { $eq: [{ $year: "$saleDate" }, targetYear] }
+          ]
+        }
+      }
+    },
+
+    // 2. Descomponer el arreglo de productos vendidos
+    { $unwind: "$sellingProducts" },
+
+    // 3. Agrupar por ID del producto, contar y conservar info
+    {
+      $group: {
+        _id: "$sellingProducts.id",
+        count: { $sum: 1 },
+        product: { $first: "$sellingProducts" }
+      }
+    },
+
+    // 4. Ordenar por mayor cantidad
+    { $sort: { count: -1 } },
+
+    // 5. Limitar al top 1
+    { $limit: 1 },
+
+    // 6. Reestructurar salida
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ["$product", { count: "$count" }]
+        }
+      }
+    }
+  ]);
+};
 
 module.exports = model("Sale", SalesSchema);

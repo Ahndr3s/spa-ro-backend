@@ -2,7 +2,7 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 const { validateFields } = require("../middlewares/validateFields");
 const { validateJWT } = require("../middlewares/validate-jwt");
-const { getSales, createSale, updateSale, deleteSale, getMostSoldProduct } = require("../controllers/salesController");
+const { getSales, createSale, updateSale, deleteSale, getMostSoldProduct, getMostSoldProductOfTheMonth, getEarningsOfTheMonth } = require("../controllers/salesController");
 const router = Router()
 
 // CREATE SALES
@@ -27,9 +27,6 @@ router.get('/', getSales)
 // EVERY ROUTE MUST BE VALIDATE
 router.use(validateJWT)
 
-// GET MOST SOLD PRODUCT STATISTICS
-router.get('/summary/', getMostSoldProduct);
-
 // UPDATE SALES
 router.post('/:id', [
     check('saleDate', 'The content must have a date!!').not().isEmpty(),
@@ -44,5 +41,11 @@ router.post('/:id', [
 
 // DELETE SALE
 router.delete('/:id', deleteSale)
+
+//-------------------------ANALYTICS-------------------------------
+
+// GET MOST SOLD PRODUCT OF THE MONTH
+router.get('/summary/mostSoldOfTheMonth/:formatedDate', getMostSoldProductOfTheMonth);
+
 
 module.exports = router 
