@@ -132,7 +132,7 @@ const getMostSoldProduct = async (req, res) => {
 // GETS THE MOST SOLD PRODUCT OF THE MONTH
 const getMostSoldProductOfTheMonth = async (req, res) => {
   try {
-    const stats = await Sale.getMostSoldProductOfTheMonth(req.formattedDate);
+    const stats = await Sale.getMostSoldProductOfTheMonth(req.inputDate);
     res.json(stats);
   } catch (error) {
     console.error("Error at getting month's statistics:", error);
