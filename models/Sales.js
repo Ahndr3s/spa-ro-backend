@@ -83,8 +83,8 @@ SalesSchema.statics.getMostSoldProduct = async function () {
 
 // METHOD TO GET THE EARNINGS OF THE MONTH
 SalesSchema.statics.getMostSoldProductOfTheMonth = async function (dateInput) {
-  // Convertir string "dd/mm/yyyy" a objeto Date
-  const [day, month, year] = dateInput.split("/").map(Number);
+  // Convertir string "yyyy/mm/dd" a objeto Date
+  const [year, month,day] = dateInput.split("-").map(Number);
   const inputDate = new Date(year, month - 1, day);
 
   const targetMonth = inputDate.getMonth() + 1; // 1-12
