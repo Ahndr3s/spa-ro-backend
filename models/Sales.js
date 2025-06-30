@@ -6,7 +6,7 @@ const SalesSchema = Schema({
     required: true,
   },
   saleDate: {
-    type: String,
+    type: Date,
     required: true,
   },
   clientName: {
