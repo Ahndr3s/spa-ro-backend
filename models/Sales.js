@@ -132,4 +132,19 @@ SalesSchema.statics.getMostSoldProductOfTheMonth = async function (dateInput) {
   ]);
 };
 
+// METHOD TO GET THE MOST SOLD PRODUCT
+saleSchema.statics.getSalesOfTheMonth = async function () {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+  return this.find({
+    saleDate: {
+      $gte: startOfMonth,
+      $lt: startOfNextMonth
+    }
+  });
+};
+
+
 module.exports = model("Sale", SalesSchema);
