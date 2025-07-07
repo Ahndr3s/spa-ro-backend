@@ -143,11 +143,11 @@ const getMostSoldProductOfTheMonth = async (req, res) => {
 // GETS THE MOST SOLD PRODUCT OF THE MONTH
 const getSalesOfTheMonth = async (req, res) => {
   try {
-    const stats = await Sale.getMostSoldProductOfTheMonth();
-    res.json(stats);
+    const sales = await Sale.getSalesOfTheMonth();
+    res.json(sales);
   } catch (error) {
-    console.error("Error at getting month's statistics:", error);
-    res.status(500).json({ message: "Error at getting month's statistics" });
+    console.error("Error at getting month's sales:", error);
+    res.status(500).json({ message: "Error at getting month's sales" });
   }
 };
 
