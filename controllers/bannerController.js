@@ -41,6 +41,9 @@ const createBanner = async(req, res = response) => {
 const updateBanner = async(req, res = response) => {
     const bannerId = req.params.id
     const uuid = req.uuid
+    console.log(req.body)
+    console.log(uuid)
+
 
     try {
         const banner = await Banner.findById(bannerId)

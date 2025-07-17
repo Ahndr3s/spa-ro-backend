@@ -1,4 +1,5 @@
-const  axios  = require("axios");
+const axios = require("axios");
+const nodemailer = require("nodemailer");
 const { response } = require("express");
 const PAYPAL_API_CLIENT = process.env.PAYPAL_API_CLIENT;
 const PAYPAL_API_SECRET = process.env.PAYPAL_API_SECRET;
@@ -7,16 +8,21 @@ let cachedAccessToken = null;
 let tokenExpiration = null;
 
 const generateUUID = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
   });
-}
+};
 
 const getAccessToken = async () => {
   try {
     // Verificar si el token en caché es válido
-    if (cachedAccessToken && tokenExpiration && tokenExpiration > Date.now() + 30000) {
+    if (
+      cachedAccessToken &&
+      tokenExpiration &&
+      tokenExpiration > Date.now() + 30000
+    ) {
       console.log("Usando token de acceso en caché");
       return cachedAccessToken;
     }
@@ -32,9 +38,11 @@ const getAccessToken = async () => {
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": `Basic ${Buffer.from(`${PAYPAL_API_CLIENT}:${PAYPAL_API_SECRET}`).toString("base64")}`,
+          Authorization: `Basic ${Buffer.from(
+            `${PAYPAL_API_CLIENT}:${PAYPAL_API_SECRET}`
+          ).toString("base64")}`,
         },
-        timeout: 10000 // 10 segundos de timeout
+        timeout: 10000, // 10 segundos de timeout
       }
     );
 
@@ -43,7 +51,7 @@ const getAccessToken = async () => {
     // }
 
     cachedAccessToken = response.data.access_token;
-    tokenExpiration = Date.now() + (response.data.expires_in * 1000); // 1 minuto antes de expirar
+    tokenExpiration = Date.now() + response.data.expires_in * 1000; // 1 minuto antes de expirar
 
     return cachedAccessToken;
   } catch (error) {
@@ -66,7 +74,7 @@ const checkoutOrder = async (access_token, data) => {
       {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${access_token}`,
+          Authorization: `Bearer ${access_token}`,
           "Paypal-Request-Id": generateUUID(), // Evita duplicados
         },
       }
@@ -77,20 +85,27 @@ const checkoutOrder = async (access_token, data) => {
     const order = response.data;
 
     // Buscar la URL de aprobación en los links de la respuesta
-    const approveLink = order.links?.find(link => link.rel === "approve");
+    const approveLink = order.links?.find((link) => link.rel === "approve");
 
     if (!approveLink) {
-      console.error("No se encontró el enlace de aprobación. Respuesta de PayPal:", order);
-      throw new Error("No se encontró el enlace de aprobación en la respuesta de PayPal.");
+      console.error(
+        "No se encontró el enlace de aprobación. Respuesta de PayPal:",
+        order
+      );
+      throw new Error(
+        "No se encontró el enlace de aprobación en la respuesta de PayPal."
+      );
     }
 
     return {
       id: order.id,
       approveUrl: approveLink.href, // URL donde el usuario debe aprobar el pago
     };
-
   } catch (error) {
-    console.error("Error en checkoutOrder:", error.response?.data || error.message);
+    console.error(
+      "Error en checkoutOrder:",
+      error.response?.data || error.message
+    );
     throw new Error(error.response?.data || error.message);
   }
 };
@@ -103,14 +118,19 @@ const checkoutSuccess = async (access_token, orderId) => {
       {},
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${access_token}`,
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
       }
     );
 
-    return response.data; // Retorna el access_token correctamente
+    // try {
+    //   await sendConfirmationEmail(payerEmail);
+    // } catch (e) {
+    //   console.error("Error al enviar correo:", e);
+    // }
 
+    return response.data; // Retorna el access_token correctamente
   } catch (error) {
     throw new Error(error.response?.data || error.message); // Lanza un error en caso de fallo
   }
@@ -120,5 +140,39 @@ const cancelCheckout = (req, res = response) => {
   res.redirect("/");
 };
 
+const sendConfirmationEmail = async (req, res = response) => {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "tu-email@gmail.com",
+      pass: "tu-clave-o-app-password",
+    },
+  });
 
-module.exports = { getAccessToken, checkoutOrder, checkoutSuccess, cancelCheckout, generateUUID };
+  /*let transporter = nodemailer.createTransport({
+    host: "mail.tudominio.com", // o smtp.tudominio.com, depende de tu proveedor
+    port: 465, // 587 también es común (depende si usas SSL o TLS)
+    secure: true, // true para puerto 465, false para 587
+    auth: {
+      user: "correo@tudominio.com", // tu dirección de correo
+      pass: "tu-contraseña", // tu contraseña de correo (o App Password si aplica)
+    },
+  });*/
+
+  let info = await transporter.sendMail({
+    from: '"Rossmina" <tu-email@gmail.com>',
+    to: toEmail,
+    subject: "Confirmación de Pago",
+    html: `<h1>Gracias por tu compra :)</h1><p>Tu pago fue exitoso. Muchas gracias por tu preferencia <3</p>`,
+  });
+
+  console.log("Correo enviado:", info.messageId);
+};
+
+module.exports = {
+  getAccessToken,
+  checkoutOrder,
+  checkoutSuccess,
+  cancelCheckout,
+  generateUUID,
+};
