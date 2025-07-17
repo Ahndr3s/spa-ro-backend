@@ -40,7 +40,7 @@ const createBanner = async(req, res = response) => {
 
 const updateBanner = async(req, res = response) => {
     const bannerId = req.params.id
-    const uuid = req.uuid
+    const uuid = req.uuid || sessionStorage.getItem("user")
     console.log(req.body)
     console.log(uuid)
 
@@ -94,7 +94,7 @@ const deleteBanner = async(req, res = response) => {
             })
         }
 
-        if(banner.user.toString() !== uuid){
+        if(banner.user.toString() !== uuid?.uuid){
             return res.status(401).json({
                 ok: false,
                 msg: 'This user cannot delete this banner'
