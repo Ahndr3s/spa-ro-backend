@@ -82,7 +82,7 @@ const updateBanner = async(req, res = response) => {
 
 const deleteBanner = async(req, res = response) => {
     const bannerId = req.params.id
-    const { user: uuid } = req.body;
+    const uuid = req.query.user; 
 
     try {
         const banner = await Banner.findById(bannerId)
