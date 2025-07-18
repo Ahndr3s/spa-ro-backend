@@ -35,7 +35,7 @@ const createProduct = async(req, res = response) => {
 
 const updateProduct = async(req, res = response) => {
     const productId = req.params.id
-    const uuid = req.uuid
+    const { user: uuid } = req.body;
 
     try {
         const product = await Product.findById(productId)
@@ -75,7 +75,7 @@ const updateProduct = async(req, res = response) => {
 
 const deleteProduct = async(req, res = response) => {
     const productId = req.params.id
-    const uuid = req.uuid 
+    const uuid = req.query.user;  
 
     try {
         const product = await Product.findById(productId)

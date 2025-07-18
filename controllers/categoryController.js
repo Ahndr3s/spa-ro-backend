@@ -34,7 +34,7 @@ const createCategory = async(req, res = response) => {
 
 const updateCategory = async(req, res = response) => {
     const categoryId = req.params.id
-    const uuid = req.uuid
+    const { user: uuid } = req.body;
 
     try {
         const category = await Category.findById(categoryId)
@@ -74,7 +74,7 @@ const updateCategory = async(req, res = response) => {
 
 const deleteCategory = async(req, res = response) => {
     const categoryId = req.params.id
-    const uuid = req.uuid 
+    const uuid = req.query.user; 
 
     try {
         const category = await Category.findById(categoryId)
