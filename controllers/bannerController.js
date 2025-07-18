@@ -93,7 +93,7 @@ const deleteBanner = async(req, res = response) => {
             })
         }
 
-        if(banner.user.toString() !== uuid?.uuid){
+        if(banner.user.toString() !== uuid){
             return res.status(401).json({
                 ok: false,
                 msg: 'This user cannot delete this banner'
