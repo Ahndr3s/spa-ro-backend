@@ -41,9 +41,8 @@ const createBanner = async(req, res = response) => {
 const updateBanner = async(req, res = response) => {
     const bannerId = req.params.id
     const { user: uuid } = req.body;
-    console.log(req.body)
-    console.log(uuid)
-
+    // console.log(req.body)
+    // console.log(uuid)
 
     try {
         const banner = await Banner.findById(bannerId)
@@ -83,7 +82,7 @@ const updateBanner = async(req, res = response) => {
 
 const deleteBanner = async(req, res = response) => {
     const bannerId = req.params.id
-    const uuid = req.uuid 
+    const { user: uuid } = req.body;
 
     try {
         const banner = await Banner.findById(bannerId)
