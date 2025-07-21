@@ -18,6 +18,7 @@ router.post("/", async (req, res) => {
     console.log("Token de acceso obtenido:", access_token ? "OK" : "Fallo");
     
     const { order } = req.body;
+    console.log(order)
     if (
       !order ||
       !order.sellingProducts ||
