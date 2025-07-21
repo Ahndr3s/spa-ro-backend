@@ -15,9 +15,8 @@ router.post("/", async (req, res) => {
   try {
     console.log("Iniciando creación de orden...");
     const access_token = await getAccessToken();
-    const shipmentinfo = order.contactAddress.spil(' ');
     console.log("Token de acceso obtenido:", access_token ? "OK" : "Fallo");
-
+    
     const { order } = req.body;
     if (
       !order ||
@@ -26,7 +25,8 @@ router.post("/", async (req, res) => {
     ) {
       return res.status(400).json({ error: "Orden inválida o sin productos" });
     }
-
+    
+    const shipmentinfo = order.contactAddress.spil(' ');
     // Validar que el subtotal coincida con la suma de los productos
     const calculatedSubtotal = order.sellingProducts.reduce((sum, product) => {
       return sum + parseFloat(product.price) * parseInt(product.qty);
