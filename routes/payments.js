@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Orden inválida o sin productos" });
     }
     
-    const shipmentinfo = order.contactAddress.spil(' ');
+    const shipmentinfo = order.contactAddress.split(' ');
     // Validar que el subtotal coincida con la suma de los productos
     const calculatedSubtotal = order.sellingProducts.reduce((sum, product) => {
       return sum + parseFloat(product.price) * parseInt(product.qty);
