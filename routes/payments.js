@@ -42,11 +42,12 @@ router.post("/", async (req, res) => {
         {
           amount: {
             currency_code: "USD",
-            value: parseFloat(order.subTotal.toFixed(2)),
+            value: (parseFloat(order.subTotal)+order.regTariff+order.Iva).toFixed(2),
             breakdown: {
               item_total: {
                 currency_code: "USD",
-                value: parseFloat(order.subTotal.toFixed(2)),
+                // value: parseFloat(order.subTotal.toFixed(2)),
+                value: (parseFloat(order.subTotal)+order.regTariff+order.Iva).toFixed(2),
               },
             },
           },
