@@ -83,7 +83,7 @@ router.post("/", async (req, res) => {
           shipping: {
             address: {
               address_line_1: shipmentinfo[0],
-              address_line_2: order.shippingAddress.interior || "", // Opcional
+              // address_line_2: order.shippingAddress.interior || "", // Opcional
               admin_area_1: shipmentinfo[3], // Estado (ej. "CDMX", "Jalisco")
               admin_area_2: shipmentinfo[2], // Ciudad/Municipio
               postal_code: shipmentinfo[1], // Código Postal
